@@ -8,27 +8,30 @@ import {
 } from './mockDb';
 import { translations } from './translations';
 
-// Icon Components (Premium SVG Inline Icons)
+// Premium Minimalist Thin-Line SVG Icons
 const IconDashboard = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="9" /><rect x="14" y="3" width="7" height="5" /><rect x="14" y="12" width="7" height="9" /><rect x="3" y="16" width="7" height="5" /></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="9" rx="1" /><rect x="14" y="3" width="7" height="5" rx="1" /><rect x="14" y="12" width="7" height="9" rx="1" /><rect x="3" y="16" width="7" height="5" rx="1" /></svg>
+);
+const IconMasterSettings = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>
 );
 const IconStudents = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
 );
 const IconClasses = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /><path d="M12 11v6" /><path d="M9 14h6" /></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>
 );
 const IconAttendance = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
 );
 const IconGrades = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" /></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" /></svg>
 );
 const IconFinance = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" /></svg>
 );
 const IconDocuments = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" /></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
 );
 
 function App() {
@@ -50,6 +53,9 @@ function App() {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   
+  // Simulated Excel Right-Click Context Menu State
+  const [contextMenu, setContextMenu] = useState(null); // { x: 0, y: 0, studentId: null }
+
   // States for adding student form
   const [showAddModal, setShowAddModal] = useState(false);
   const [newStudent, setNewStudent] = useState({
@@ -72,6 +78,13 @@ function App() {
   const t = (key) => {
     return translations[lang]?.[key] || key;
   };
+
+  // Close context menu on window click
+  useEffect(() => {
+    const handleCloseMenu = () => setContextMenu(null);
+    window.addEventListener('click', handleCloseMenu);
+    return () => window.removeEventListener('click', handleCloseMenu);
+  }, []);
 
   // Save student updates to localStorage
   useEffect(() => {
@@ -149,13 +162,14 @@ function App() {
     
     setStudents([...students, newStudentObj]);
     setShowAddModal(false);
-    // Reset form
-    setNewStudent({
-      id: '', nameEn: '', nameJp: '', zairyuCardNumber: '', passportNumber: '',
-      birthday: '', gender: 'Male', nationality: '', visaType: 'Talaba (Student)',
-      visaExpiry: '', address: '', entryDate: '2026-04-01', entryTerm: '4-Chorak (April)',
-      courseId: 'c1', classId: 'cls1', photo: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80'
-    });
+  };
+
+  // Red/Orange/Yellow Attendance Threshold logic from Manual Page 11
+  const getAttendanceBadgeClass = (percent) => {
+    if (percent < 85) return 'badge-danger';  // Red
+    if (percent < 90) return 'badge-warning'; // Orange
+    if (percent < 95) return 'badge-warning'; // Yellow (using warning color theme)
+    return 'badge-success';                   // Green
   };
 
   const getVisaAlertCount = () => {
@@ -223,12 +237,27 @@ function App() {
     return parseFloat(((presentPeriods / totalPeriods) * 100).toFixed(1));
   };
 
+  // Excel Context Menu Trigger (Simulates Manual Page 3 right-click actions)
+  const handleExcelContextMenu = (e, studentId) => {
+    e.preventDefault();
+    setContextMenu({
+      x: e.pageX,
+      y: e.pageY,
+      studentId
+    });
+  };
+
+  const executeContextAction = (action) => {
+    alert(lang === 'uz' ? `Jadval harakati bajarildi: ${action}` : `テーブルアクション実行: ${action}`);
+    setContextMenu(null);
+  };
+
   return (
     <div className="app-container">
       {/* 1. Sidebar Nav */}
       <aside className="sidebar">
         <div className="sidebar-logo">
-          <span style={{ fontSize: '28px' }}>🏫</span>
+          <span style={{ fontSize: '24px' }}>🏫</span>
           <div className="sidebar-logo-text">Assist School</div>
         </div>
         
@@ -238,6 +267,12 @@ function App() {
             onClick={() => { setActiveTab('dashboard'); setSelectedStudent(null); }}
           >
             <IconDashboard /> {t('dashboard')}
+          </button>
+          <button 
+            className={`sidebar-item ${activeTab === 'master' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('master'); setSelectedStudent(null); }}
+          >
+            <IconMasterSettings /> {t('masterSettings')}
           </button>
           <button 
             className={`sidebar-item ${activeTab === 'students' ? 'active' : ''}`}
@@ -278,7 +313,7 @@ function App() {
         </nav>
 
         <div className="sidebar-footer">
-          <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'var(--accent-purple)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>AD</div>
+          <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'var(--accent-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: '#fff' }}>AD</div>
           <div>
             <div style={{ fontSize: '14px', fontWeight: '600' }}>Admin Uzer</div>
             <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{lang === 'uz' ? 'Maktab Mudiri' : '学校管理者'}</div>
@@ -288,10 +323,11 @@ function App() {
 
       {/* 2. Main content */}
       <main className="main-content">
-        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', borderBottom: '1px solid var(--border-color)', paddingBottom: '16px' }}>
+        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', borderBottom: '1px solid var(--inner-border)', paddingBottom: '16px' }}>
           <div>
-            <h1 style={{ fontSize: '26px', fontFamily: 'var(--font-heading)' }}>
+            <h1 style={{ fontSize: '26px', fontFamily: 'var(--font-heading)', color: 'var(--accent-teal)' }}>
               {activeTab === 'dashboard' && t('dashboard')}
+              {activeTab === 'master' && t('masterSettings')}
               {activeTab === 'students' && t('students')}
               {activeTab === 'classes' && t('classes')}
               {activeTab === 'attendance' && t('attendance')}
@@ -306,16 +342,16 @@ function App() {
 
           <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
             {/* Language Selector Switch */}
-            <div style={{ display: 'flex', background: 'var(--bg-secondary)', padding: '4px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+            <div style={{ display: 'flex', background: 'rgba(0,0,0,0.03)', padding: '4px', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.08)' }}>
               <button 
                 onClick={() => setLang('uz')}
-                style={{ padding: '6px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', background: lang === 'uz' ? 'var(--accent-blue)' : 'transparent', color: '#fff' }}
+                style={{ padding: '6px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', background: lang === 'uz' ? 'var(--accent-teal)' : 'transparent', color: lang === 'uz' ? '#fff' : 'var(--text-primary)' }}
               >
                 UZ
               </button>
               <button 
                 onClick={() => setLang('jp')}
-                style={{ padding: '6px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', background: lang === 'jp' ? 'var(--accent-blue)' : 'transparent', color: '#fff' }}
+                style={{ padding: '6px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', background: lang === 'jp' ? 'var(--accent-teal)' : 'transparent', color: lang === 'jp' ? '#fff' : 'var(--text-primary)' }}
               >
                 JP
               </button>
@@ -332,23 +368,23 @@ function App() {
         {/* Tab Content Router */}
         {activeTab === 'dashboard' && (
           <div>
-            {/* Metric widgets */}
+            {/* Metric widgets with independent staggered floating animations */}
             <div className="card-grid">
-              <div className="metric-card glass">
+              <div className="metric-card glass float-card-1">
                 <div className="metric-info">
                   <h3>{t('totalStudents')}</h3>
                   <div className="metric-value">{students.length}</div>
                 </div>
-                <div className="metric-icon" style={{ color: 'var(--accent-blue)' }}>👥</div>
+                <div className="metric-icon" style={{ color: 'var(--accent-teal)' }}>👥</div>
               </div>
-              <div className="metric-card glass">
+              <div className="metric-card glass float-card-2">
                 <div className="metric-info">
                   <h3>{t('activeClasses')}</h3>
                   <div className="metric-value">{classes.length}</div>
                 </div>
-                <div className="metric-icon" style={{ color: 'var(--accent-purple)' }}>🏫</div>
+                <div className="metric-icon" style={{ color: 'var(--accent-sand)' }}>🏫</div>
               </div>
-              <div className="metric-card glass">
+              <div className="metric-card glass float-card-3">
                 <div className="metric-info">
                   <h3>{t('averageAttendance')}</h3>
                   <div className="metric-value">
@@ -370,7 +406,7 @@ function App() {
                     const days = getDaysToVisaExpiry(s.visaExpiry);
                     if (days <= 30) {
                       return (
-                        <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: 'rgba(239, 68, 68, 0.08)', borderRadius: '12px', borderLeft: '4px solid var(--status-danger)' }}>
+                        <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: 'rgba(225, 29, 72, 0.04)', borderRadius: '12px', borderLeft: '4px solid var(--status-danger)' }}>
                           <div>
                             <div style={{ fontWeight: '600' }}>{s.nameEn} ({s.nationality})</div>
                             <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>{t('zairyuNo')}: {s.zairyuCardNumber}</div>
@@ -389,7 +425,7 @@ function App() {
                   {students.map(s => {
                     if (s.attendancePercent < 80) {
                       return (
-                        <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: 'rgba(245, 158, 11, 0.08)', borderRadius: '12px', borderLeft: '4px solid var(--status-warning)' }}>
+                        <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: 'rgba(217, 119, 6, 0.04)', borderRadius: '12px', borderLeft: '4px solid var(--status-warning)' }}>
                           <div>
                             <div style={{ fontWeight: '600' }}>{s.nameEn} ({s.nationality})</div>
                             <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>{t('classes')}: {classes.find(c => c.id === s.classId)?.name}</div>
@@ -410,13 +446,13 @@ function App() {
               <div className="glass" style={{ padding: '24px' }}>
                 <h2 style={{ fontSize: '18px', marginBottom: '16px' }}>📅 {t('todayLessons')}</h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  <div style={{ padding: '12px', borderBottom: '1px solid var(--border-color)' }}>
-                    <div style={{ fontSize: '12px', color: 'var(--accent-blue)', fontWeight: '600' }}>09:00 - 10:30 (1-2)</div>
+                  <div style={{ padding: '12px', borderBottom: '1px solid var(--inner-border)' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--accent-teal)', fontWeight: '600' }}>09:00 - 10:30 (1-2)</div>
                     <div style={{ fontWeight: '500', marginTop: '4px' }}>{lang === 'uz' ? 'Choraklik Yapon Tili Grammatikasi' : '期末日本語文法授業'}</div>
                     <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Sinf: 2026-A | Tanaka Sato</div>
                   </div>
-                  <div style={{ padding: '12px', borderBottom: '1px solid var(--border-color)' }}>
-                    <div style={{ fontSize: '12px', color: 'var(--accent-blue)', fontWeight: '600' }}>10:45 - 12:15 (3-4)</div>
+                  <div style={{ padding: '12px', borderBottom: '1px solid var(--inner-border)' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--accent-teal)', fontWeight: '600' }}>10:45 - 12:15 (3-4)</div>
                     <div style={{ fontWeight: '500', marginTop: '4px' }}>{lang === 'uz' ? 'JLPT Kanzi va Lug\'at Mashg\'uloti' : 'JLPT漢字・語彙演習'}</div>
                     <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Sinf: 2026-A | Suzuki Mari</div>
                   </div>
@@ -434,7 +470,69 @@ function App() {
           </div>
         )}
 
-        {/* 2. Students Tab */}
+        {/* 2. Master Settings Tab (事前準備 - Manual Page 4) */}
+        {activeTab === 'master' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div className="glass" style={{ padding: '24px' }}>
+              <h2 style={{ fontSize: '18px', marginBottom: '16px' }}>📅 {t('calendarTitle')}</h2>
+              <div className="table-container">
+                <table className="modern-table">
+                  <thead>
+                    <tr>
+                      <th>Sana / 日付</th>
+                      <th>Bayram / 祝日名</th>
+                      <th>Holati / 区分</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {calendar.holidays.map(h => (
+                      <tr key={h.date}>
+                        <td>{h.date}</td>
+                        <td style={{ fontWeight: '600' }}>{h.name}</td>
+                        <td><span className="badge badge-danger">{lang === 'uz' ? 'Bayram' : '祝日'}</span></td>
+                      </tr>
+                    ))}
+                    {calendar.schoolClosed.map(c => (
+                      <tr key={c.date}>
+                        <td>{c.date}</td>
+                        <td style={{ fontWeight: '600' }}>{c.reason}</td>
+                        <td><span className="badge badge-warning">{lang === 'uz' ? 'Yopiq' : '休校'}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="glass" style={{ padding: '24px' }}>
+              <h2 style={{ fontSize: '18px', marginBottom: '16px' }}>👥 {t('teacherTitle')}</h2>
+              <div className="table-container">
+                <table className="modern-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Ismi / 氏名</th>
+                      <th>Bo'lim / 所属</th>
+                      <th>Email</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {teachers.map(tObj => (
+                      <tr key={tObj.id}>
+                        <td>{tObj.id}</td>
+                        <td style={{ fontWeight: '600' }}>{tObj.name}</td>
+                        <td>{tObj.department}</td>
+                        <td><code>{tObj.email}</code></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 3. Students Tab */}
         {activeTab === 'students' && !selectedStudent && (
           <div className="glass" style={{ padding: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px' }}>
@@ -485,7 +583,7 @@ function App() {
                           </span>
                         </td>
                         <td>
-                          <span className={`badge ${s.attendancePercent < 80 ? 'badge-danger' : 'badge-success'}`}>
+                          <span className={`badge ${getAttendanceBadgeClass(s.attendancePercent)}`}>
                             {s.attendancePercent}%
                           </span>
                         </td>
@@ -512,7 +610,7 @@ function App() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '24px' }}>
               {/* Left Profile card */}
               <div className="glass" style={{ padding: '24px', textAlign: 'center' }}>
-                <img src={selectedStudent.photo} alt={selectedStudent.nameEn} style={{ width: '120px', height: '120px', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--accent-blue)', margin: '0 auto 16px' }} />
+                <img src={selectedStudent.photo} alt={selectedStudent.nameEn} style={{ width: '120px', height: '120px', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--accent-teal)', margin: '0 auto 16px' }} />
                 <h2 style={{ fontSize: '20px' }}>{selectedStudent.nameEn}</h2>
                 <p style={{ color: 'var(--text-secondary)', margin: '4px 0 16px' }}>{selectedStudent.nameJp}</p>
                 <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '24px' }}>
@@ -520,7 +618,7 @@ function App() {
                   <span className="badge badge-warning">{selectedStudent.entryTerm}</span>
                 </div>
 
-                <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
+                <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '1px solid var(--inner-border)', paddingTop: '16px' }}>
                   <div>
                     <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{t('zairyuNo')}</div>
                     <div style={{ fontWeight: '500' }}><code>{selectedStudent.zairyuCardNumber}</code></div>
@@ -572,7 +670,7 @@ function App() {
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                       {selectedStudent.interviews.map(i => (
-                        <div key={i.id} style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '12px', borderLeft: '3px solid var(--accent-purple)' }}>
+                        <div key={i.id} style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '12px', borderLeft: '3px solid var(--accent-teal)' }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                             <span style={{ fontWeight: '600', fontSize: '14px' }}>{i.category}</span>
                             <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{i.date} | Teacher: {i.interviewer}</span>
@@ -659,7 +757,7 @@ function App() {
           </div>
         )}
 
-        {/* 4. Smart Attendance Tab (Excel Grid) */}
+        {/* 4. Smart Attendance Tab (Excel Grid with Right-Click Context Menu) */}
         {activeTab === 'attendance' && (
           <div className="glass" style={{ padding: '24px' }}>
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '24px', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -696,6 +794,7 @@ function App() {
                     <th>{t('period3')}</th>
                     <th>{t('period4')}</th>
                     <th>{t('monthlyAttendance')}</th>
+                    <th>Excel Menu</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -704,7 +803,7 @@ function App() {
                     .map(s => {
                       const todayAtt = s.attendance[attendanceDate] || ['present', 'present', 'present', 'present'];
                       return (
-                        <tr key={s.id}>
+                        <tr key={s.id} onContextMenu={(e) => handleExcelContextMenu(e, s.id)}>
                           <td>{s.id}</td>
                           <td style={{ fontWeight: '600' }}>{s.nameEn}</td>
                           {[0, 1, 2, 3].map(pIndex => (
@@ -722,9 +821,19 @@ function App() {
                             </td>
                           ))}
                           <td>
-                            <span className={`badge ${s.attendancePercent < 80 ? 'badge-danger' : 'badge-success'}`}>
+                            <span className={`badge ${getAttendanceBadgeClass(s.attendancePercent)}`}>
                               {s.attendancePercent}%
                             </span>
+                          </td>
+                          <td>
+                            {/* Simulator indicator button */}
+                            <button 
+                              className="btn btn-secondary" 
+                              style={{ padding: '4px 8px', fontSize: '11px' }}
+                              onClick={(e) => handleExcelContextMenu(e, s.id)}
+                            >
+                              ⚙️
+                            </button>
                           </td>
                         </tr>
                       );
@@ -872,6 +981,17 @@ function App() {
         )}
       </main>
 
+      {/* Simulated Context Menu for Excel-like operations */}
+      {contextMenu && (
+        <ul className="excel-context-menu" style={{ top: contextMenu.y, left: contextMenu.x }}>
+          <li className="excel-context-item" onClick={() => executeContextAction(t('excelContextInsert'))}>➕ {t('excelContextInsert')}</li>
+          <li className="excel-context-item" onClick={() => executeContextAction(t('excelContextDelete'))}>❌ {t('excelContextDelete')}</li>
+          <li className="excel-context-item" onClick={() => executeContextAction(t('excelContextJump'))}>➡️ {t('excelContextJump')}</li>
+          <li className="excel-context-item" onClick={() => executeContextAction(t('excelContextCopy'))}>📋 {t('excelContextCopy')}</li>
+          <li className="excel-context-item" onClick={() => executeContextAction(t('excelContextPaste'))}>📥 {t('excelContextPaste')}</li>
+        </ul>
+      )}
+
       {/* MODAL: ADD STUDENT WITH OCR SIMULATOR */}
       {showAddModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
@@ -881,8 +1001,8 @@ function App() {
             </h2>
             
             {/* OCR Scanner simulator buttons */}
-            <div style={{ background: 'var(--accent-blue-glow)', padding: '16px', borderRadius: '12px', border: '1px dashed var(--accent-blue)', marginBottom: '24px' }}>
-              <div style={{ fontSize: '13px', fontWeight: '600', marginBottom: '8px', color: 'var(--accent-blue)' }}>{t('ocrTip')}</div>
+            <div style={{ background: 'var(--accent-teal-glow)', padding: '16px', borderRadius: '12px', border: '1px dashed var(--accent-teal)', marginBottom: '24px' }}>
+              <div style={{ fontSize: '13px', fontWeight: '600', marginBottom: '8px', color: 'var(--accent-teal)' }}>{t('ocrTip')}</div>
               <div style={{ display: 'flex', gap: '12px' }}>
                 <button type="button" className="btn btn-secondary" style={{ padding: '8px 16px', fontSize: '12px' }} onClick={() => handleMockOCRScan('zairyu')}>
                   {t('ocrScanZairyu')}

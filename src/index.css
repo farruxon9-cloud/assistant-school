@@ -1,36 +1,37 @@
-/* Premium Light Glassmorphism Minimalistic CSS for Assistant School */
+/* Elegant Sage & Sand Design System for Assistant School */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
 
 :root {
-  /* Soft, Eye-Friendly Light Pastel Palette */
-  --bg-mesh-1: #eff6ff; /* Soft Blue */
-  --bg-mesh-2: #fdf2f8; /* Soft Pink */
-  --bg-mesh-3: #faf5ff; /* Soft Purple */
+  /* Eye-friendly Organic Color Palette (Teal, Sage Green, and Soft Ochre Sand) */
+  --bg-mesh-1: #f4fbf7; /* Soothing Mint White */
+  --bg-mesh-2: #fcf9f2; /* Warm Alabaster Cream */
+  --bg-mesh-3: #f0f7f4; /* Muted Sage Gray */
   
   --bg-primary: #f8fafc;
-  --bg-secondary: rgba(255, 255, 255, 0.45); /* Frosted Glass Base */
+  --bg-secondary: rgba(255, 255, 255, 0.45); /* High Refraction Frosted Glass */
   --bg-tertiary: rgba(255, 255, 255, 0.7);
   
-  --accent-blue: #2563eb;
-  --accent-blue-glow: rgba(37, 99, 235, 0.08);
-  --accent-purple: #7c3aed;
-  --accent-purple-glow: rgba(124, 58, 237, 0.08);
+  /* Primary Soft Branding Colors */
+  --accent-teal: #0f766e; /* Soothing Forest Teal */
+  --accent-teal-glow: rgba(15, 118, 110, 0.08);
+  --accent-sand: #d97706; /* Soft Terracotta/Ochre */
+  --accent-sand-glow: rgba(217, 119, 6, 0.08);
   
-  --text-primary: #1e293b; /* Dark Charcoal for high readability */
+  --text-primary: #1e293b; /* Readable Dark Slate */
   --text-secondary: #475569;
   --text-muted: #64748b;
   
-  --status-success: #059669;
+  --status-success: #0f766e; /* Coordinated Teal success status */
   --status-warning: #d97706;
-  --status-danger: #dc2626;
+  --status-danger: #e11d48;
   
-  --border-color: rgba(255, 255, 255, 0.5); /* Crisp glass border */
-  --inner-border: rgba(0, 0, 0, 0.06);
+  --border-color: rgba(255, 255, 255, 0.6); /* Very crisp glass outlines */
+  --inner-border: rgba(15, 118, 110, 0.08);
   
   --glass-bg: rgba(255, 255, 255, 0.45);
-  --glass-border: rgba(255, 255, 255, 0.6);
-  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --glass-shadow: 0 10px 40px -10px rgba(15, 118, 110, 0.05);
 
   --font-main: 'Inter', sans-serif;
   --font-heading: 'Outfit', sans-serif;
@@ -42,7 +43,7 @@
   margin: 0;
   padding: 0;
   scrollbar-width: thin;
-  scrollbar-color: rgba(0,0,0,0.1) transparent;
+  scrollbar-color: rgba(15, 118, 110, 0.1) transparent;
 }
 
 body {
@@ -51,7 +52,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  /* Premium Mesh Gradient Background for Glass refraction */
+  /* Ambient Organic Mesh Gradient Background */
   background: linear-gradient(135deg, var(--bg-mesh-1) 0%, var(--bg-mesh-2) 50%, var(--bg-mesh-3) 100%);
   background-attachment: fixed;
 }
@@ -63,7 +64,7 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.03em;
 }
 
-/* Custom Scrollbar */
+/* Custom Soft Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -72,28 +73,53 @@ h1, h2, h3, h4, h5, h6 {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.08);
+  background: rgba(15, 118, 110, 0.08);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-blue);
+  background: var(--accent-teal);
 }
 
-/* Premium Light Glassmorphism Card Style */
+/* 3. Soft Independent Floating Keyframes for Bento Elements */
+@keyframes float-gentle-1 {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes float-gentle-2 {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes float-gentle-3 {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+  100% { transform: translateY(0px); }
+}
+
+.float-card-1 { animation: float-gentle-1 8s ease-in-out infinite; }
+.float-card-2 { animation: float-gentle-2 10s ease-in-out infinite; }
+.float-card-3 { animation: float-gentle-3 9s ease-in-out infinite; }
+
+/* Frosted Glass Bento Containers */
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(24px) saturate(130%);
+  -webkit-backdrop-filter: blur(24px) saturate(130%);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
   border-radius: 20px;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, box-shadow;
 }
 
 .glass:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.6);
-  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.07);
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 16px 48px -10px rgba(15, 118, 110, 0.1);
+  border-color: rgba(255, 255, 255, 0.95);
 }
 
 /* Layout */
@@ -106,8 +132,8 @@ h1, h2, h3, h4, h5, h6 {
 .sidebar {
   width: var(--sidebar-width);
   background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border-right: 1px solid var(--border-color);
   padding: 30px 20px;
   display: flex;
@@ -126,19 +152,20 @@ h1, h2, h3, h4, h5, h6 {
 
 .sidebar-logo-text {
   font-family: var(--font-heading);
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
-  background: linear-gradient(135deg, #1e40af, #6d28d9);
+  background: linear-gradient(135deg, var(--accent-teal), var(--accent-sand));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.04em;
+  text-transform: uppercase;
 }
 
 .sidebar-menu {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   flex-grow: 1;
 }
 
@@ -146,7 +173,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 18px;
+  padding: 12px 16px;
   border-radius: 12px;
   color: var(--text-secondary);
   text-decoration: none;
@@ -154,22 +181,23 @@ h1, h2, h3, h4, h5, h6 {
   background: transparent;
   cursor: pointer;
   font-family: var(--font-main);
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 500;
   text-align: left;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sidebar-item:hover {
-  color: var(--accent-blue);
-  background-color: var(--accent-blue-glow);
+  color: var(--accent-teal);
+  background-color: var(--accent-teal-glow);
+  transform: translateX(3px);
 }
 
 .sidebar-item.active {
-  color: var(--accent-blue);
-  background-color: var(--accent-blue-glow);
-  box-shadow: inset 4px 0 0 0 var(--accent-blue);
-  padding-left: 20px;
+  color: var(--accent-teal);
+  background-color: var(--accent-teal-glow);
+  box-shadow: inset 4px 0 0 0 var(--accent-teal);
+  padding-left: 18px;
   font-weight: 600;
 }
 
@@ -232,12 +260,11 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   justify-content: space-between;
   border-radius: 20px;
-  border: 1px solid var(--glass-border);
-  background: var(--glass-bg);
+  border: 1px solid var(--border-color);
 }
 
 .metric-info h3 {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -260,7 +287,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 18px;
   background-color: rgba(255, 255, 255, 0.6);
   border: 1px solid var(--inner-border);
 }
@@ -270,8 +297,8 @@ h1, h2, h3, h4, h5, h6 {
   overflow-x: auto;
   border-radius: 16px;
   border: 1px solid var(--inner-border);
-  background-color: rgba(255, 255, 255, 0.85); /* Highly readable light background */
-  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+  background-color: rgba(255, 255, 255, 0.85); /* Frosty Sand paper representation */
+  box-shadow: 0 4px 24px -10px rgba(15, 118, 110, 0.05);
 }
 
 .modern-table {
@@ -282,7 +309,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modern-table th {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: rgba(15, 118, 110, 0.02);
   padding: 16px 20px;
   color: var(--text-secondary);
   font-weight: 600;
@@ -298,11 +325,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modern-table tbody tr {
-  transition: background-color 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .modern-table tbody tr:hover {
-  background-color: rgba(0, 0, 0, 0.01);
+  background-color: rgba(15, 118, 110, 0.015);
 }
 
 /* Minimalist forms & Controls */
@@ -322,7 +349,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .form-control {
   background-color: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(15, 118, 110, 0.15);
   border-radius: 10px;
   padding: 12px 16px;
   color: var(--text-primary);
@@ -334,9 +361,9 @@ h1, h2, h3, h4, h5, h6 {
 
 .form-control:focus {
   outline: none;
-  border-color: var(--accent-blue);
+  border-color: var(--accent-teal);
   background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
 }
 
 /* Clean Minimalistic Buttons */
@@ -349,10 +376,10 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 10px;
   border: 1px solid transparent;
   font-family: var(--font-main);
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
 }
 
@@ -361,37 +388,38 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary {
-  background-color: var(--accent-blue);
+  background-color: var(--accent-teal);
   color: #fff;
 }
 
 .btn-primary:hover {
-  background-color: #1d4ed8;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
+  background-color: #0d5c58;
+  box-shadow: 0 4px 14px rgba(15, 118, 110, 0.2);
+  transform: translateY(-1px);
 }
 
 .btn-secondary {
   background-color: rgba(255, 255, 255, 0.8);
-  border-color: rgba(0, 0, 0, 0.1);
+  border-color: rgba(15, 118, 110, 0.15);
   color: var(--text-primary);
 }
 
 .btn-secondary:hover {
   background-color: #fff;
-  border-color: rgba(0, 0, 0, 0.15);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  border-color: rgba(15, 118, 110, 0.25);
+  box-shadow: 0 4px 12px rgba(15,118,110,0.03);
 }
 
 .btn-danger {
-  background-color: rgba(220, 38, 38, 0.08);
-  border-color: rgba(220, 38, 38, 0.15);
+  background-color: rgba(225, 29, 72, 0.08);
+  border-color: rgba(225, 29, 72, 0.15);
   color: var(--status-danger);
 }
 
 .btn-danger:hover {
   background-color: var(--status-danger);
   color: #fff;
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15);
 }
 
 /* Status Badges */
@@ -402,24 +430,54 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.03em;
+  border: 1px solid transparent;
 }
 
 .badge-danger {
-  background-color: rgba(220, 38, 38, 0.08);
-  border: 1px solid rgba(220, 38, 38, 0.15);
+  background-color: rgba(225, 29, 72, 0.08);
+  border-color: rgba(225, 29, 72, 0.15);
   color: var(--status-danger);
 }
 
 .badge-warning {
   background-color: rgba(217, 119, 6, 0.08);
-  border: 1px solid rgba(217, 119, 6, 0.15);
+  border-color: rgba(217, 119, 6, 0.15);
   color: var(--status-warning);
 }
 
 .badge-success {
-  background-color: rgba(5, 150, 105, 0.08);
-  border: 1px solid rgba(5, 150, 105, 0.15);
+  background-color: rgba(15, 118, 110, 0.08);
+  border-color: rgba(15, 118, 110, 0.15);
   color: var(--status-success);
+}
+
+/* Excel simulator Context Menu */
+.excel-context-menu {
+  position: absolute;
+  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  padding: 6px 0;
+  z-index: 500;
+  list-style: none;
+  font-size: 12.5px;
+  width: 140px;
+}
+
+.excel-context-item {
+  padding: 8px 16px;
+  cursor: pointer;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.excel-context-item:hover {
+  background-color: var(--accent-teal-glow);
+  color: var(--accent-teal);
 }
 
 /* Print Layout Paper representation */
@@ -427,21 +485,4 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 30px rgba(0,0,0,0.1);
   border-radius: 6px;
   border: 1px solid rgba(0,0,0,0.08);
-}
-
-@media print {
-  body * {
-    visibility: hidden;
-  }
-  .print-paper, .print-paper * {
-    visibility: visible;
-  }
-  .print-paper {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    box-shadow: none;
-    padding: 0 !important;
-  }
 }

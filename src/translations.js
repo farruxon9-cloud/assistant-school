@@ -1,22 +1,23 @@
-// Translations dictionary for Assistant School (Uzbek & Japanese)
+// Extended Bilingual Translation Dictionary for Assistant School
 
 export const translations = {
   uz: {
     dashboard: 'Dashboard',
-    students: 'Talabalar',
+    masterSettings: 'Boshlang\'ich Sozlamalar',
+    students: 'Talabalar Boshqaruvi',
     classes: 'Sinflar & Jadvallar',
-    attendance: 'Aqlli Davomat',
-    grades: 'Baholar Tizimi',
+    attendance: 'Aqlli Davomat (Grid)',
+    grades: 'Baholash (JLPT/EJU)',
     finance: 'To\'lovlar & Moliya',
-    documents: 'Hujjatlar',
-    visaAlert: 'Viza Ogohlantirishlari',
+    documents: 'Hujjatlar Markazi',
+    visaAlert: 'Viza Ogohlantirishi',
     lowAttendance: 'Kritik Davomat',
     totalStudents: 'Jami O\'quvchilar',
     activeClasses: 'Faol Guruhlar',
     averageAttendance: 'O\'rtacha Davomat',
     todayLessons: 'Bugungi Darslar',
     upcomingHolidays: 'Yaqindagi Bayramlar',
-    searchPlaceholder: 'Talabalarni qidirish (Ismi, pasport, davlat...)...',
+    searchPlaceholder: 'Talabalarni qidirish (Ismi, pasport, ID...)...',
     addStudent: 'Yangi Talaba Qo\'shish',
     studentId: 'Talaba ID',
     nameEn: 'Ismi (English)',
@@ -24,7 +25,7 @@ export const translations = {
     nationality: 'Fuqaroligi',
     zairyuNo: 'Zairyu Card Raqami',
     visaExpiry: 'Viza Muddati',
-    attendancePercent: 'Davomat',
+    attendancePercent: 'Davomat %',
     actions: 'Amal',
     details: 'Batafsil',
     backToList: 'Ro\'yxatga Qaytish',
@@ -83,14 +84,23 @@ export const translations = {
     period3: '3-Dars (10:50)',
     period4: '4-Dars (11:40)',
     male: 'Erkak',
-    female: 'Ayol'
+    female: 'Ayol',
+    calendarTitle: 'Maktab Kalendari',
+    courseTitle: 'Kurs Sozlamalari',
+    teacherTitle: 'O\'qituvchilar Ro\'yxati',
+    excelContextInsert: 'Qator Qo\'shish',
+    excelContextDelete: 'Qatorni O\'chirish',
+    excelContextJump: 'Ustunga O\'tish',
+    excelContextCopy: 'Nusxalash',
+    excelContextPaste: 'Joylashtirish'
   },
   jp: {
     dashboard: 'ダッシュボード',
+    masterSettings: '事前準備 (マスタ)',
     students: '学生管理',
     classes: 'クラス・時間割',
-    attendance: '出欠入力',
-    grades: '成績管理',
+    attendance: '出欠入力 (グリッド)',
+    grades: '成績管理 (JLPT/EJU)',
     finance: '学費・支払い',
     documents: '証明書発行',
     visaAlert: '在留期間アラート',
@@ -167,6 +177,14 @@ export const translations = {
     period3: '3限 (10:50)',
     period4: '4限 (11:40)',
     male: '男',
-    female: '女'
+    female: '女',
+    calendarTitle: '年間カレンダー設定',
+    courseTitle: 'コース情報設定',
+    teacherTitle: '教職員マスタ一覧',
+    excelContextInsert: '行挿入',
+    excelContextDelete: '行削除',
+    excelContextJump: '列にジャンプ',
+    excelContextCopy: 'コピー',
+    excelContextPaste: '貼り付け'
   }
 };
