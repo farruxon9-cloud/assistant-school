@@ -1,40 +1,31 @@
-/* Elegant Sage & Sand Design System for Assistant School */
+/* Premium iOS Glassmorphic & Minimalist CSS for Assistant School */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
 
 :root {
-  /* Eye-friendly Organic Color Palette (Teal, Sage Green, and Soft Ochre Sand) */
-  --bg-mesh-1: #f4fbf7; /* Soothing Mint White */
-  --bg-mesh-2: #fcf9f2; /* Warm Alabaster Cream */
-  --bg-mesh-3: #f0f7f4; /* Muted Sage Gray */
+  /* Vibrant & Sophisticated iOS-Style Color System */
+  --ios-blue: #007aff;
+  --ios-blue-glow: rgba(0, 122, 255, 0.12);
+  --ios-purple: #af52de;
+  --ios-purple-glow: rgba(175, 82, 222, 0.12);
+  --ios-green: #34c759;
+  --ios-orange: #ff9500;
+  --ios-red: #ff3b30;
   
-  --bg-primary: #f8fafc;
-  --bg-secondary: rgba(255, 255, 255, 0.45); /* High Refraction Frosted Glass */
-  --bg-tertiary: rgba(255, 255, 255, 0.7);
+  --bg-primary: #f2f2f7; /* iOS System Gray 6 */
+  --bg-card: rgba(255, 255, 255, 0.45); /* Highly reflective glass */
   
-  /* Primary Soft Branding Colors */
-  --accent-teal: #0f766e; /* Soothing Forest Teal */
-  --accent-teal-glow: rgba(15, 118, 110, 0.08);
-  --accent-sand: #d97706; /* Soft Terracotta/Ochre */
-  --accent-sand-glow: rgba(217, 119, 6, 0.08);
+  --text-primary: #1c1c1e; /* iOS Dark System Text */
+  --text-secondary: #55555c;
+  --text-muted: #8e8e93;
   
-  --text-primary: #1e293b; /* Readable Dark Slate */
-  --text-secondary: #475569;
-  --text-muted: #64748b;
+  --border-color: rgba(255, 255, 255, 0.65); /* Fine glass border */
+  --inner-border: rgba(0, 0, 0, 0.05);
   
-  --status-success: #0f766e; /* Coordinated Teal success status */
-  --status-warning: #d97706;
-  --status-danger: #e11d48;
-  
-  --border-color: rgba(255, 255, 255, 0.6); /* Very crisp glass outlines */
-  --inner-border: rgba(15, 118, 110, 0.08);
-  
-  --glass-bg: rgba(255, 255, 255, 0.45);
-  --glass-border: rgba(255, 255, 255, 0.75);
-  --glass-shadow: 0 10px 40px -10px rgba(15, 118, 110, 0.05);
+  --glass-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.06);
 
-  --font-main: 'Inter', sans-serif;
-  --font-heading: 'Outfit', sans-serif;
+  --font-main: 'Inter', -apple-system, sans-serif;
+  --font-heading: 'Outfit', -apple-system, sans-serif;
   --sidebar-width: 250px;
 }
 
@@ -43,7 +34,7 @@
   margin: 0;
   padding: 0;
   scrollbar-width: thin;
-  scrollbar-color: rgba(15, 118, 110, 0.1) transparent;
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
 }
 
 body {
@@ -52,8 +43,14 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  /* Ambient Organic Mesh Gradient Background */
-  background: linear-gradient(135deg, var(--bg-mesh-1) 0%, var(--bg-mesh-2) 50%, var(--bg-mesh-3) 100%);
+  
+  /* Vibrant & Bright iOS-Inspired Mesh Gradient Background */
+  background: 
+    radial-gradient(circle at 15% 15%, rgba(0, 122, 255, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 85% 10%, rgba(175, 82, 222, 0.18) 0%, transparent 45%),
+    radial-gradient(circle at 50% 85%, rgba(52, 199, 89, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(255, 149, 0, 0.12) 0%, transparent 35%),
+    #f2f2f7;
   background-attachment: fixed;
 }
 
@@ -61,38 +58,36 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
 }
 
-/* Custom Soft Scrollbars */
+/* Custom iOS Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(15, 118, 110, 0.08);
-  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-teal);
+  background: var(--ios-blue);
 }
 
-/* 3. Soft Independent Floating Keyframes for Bento Elements */
+/* Bento Style Floating Animations */
 @keyframes float-gentle-1 {
   0% { transform: translateY(0px); }
   50% { transform: translateY(-4px); }
   100% { transform: translateY(0px); }
 }
-
 @keyframes float-gentle-2 {
   0% { transform: translateY(0px); }
   50% { transform: translateY(-6px); }
   100% { transform: translateY(0px); }
 }
-
 @keyframes float-gentle-3 {
   0% { transform: translateY(0px); }
   50% { transform: translateY(-3px); }
@@ -103,43 +98,46 @@ h1, h2, h3, h4, h5, h6 {
 .float-card-2 { animation: float-gentle-2 10s ease-in-out infinite; }
 .float-card-3 { animation: float-gentle-3 9s ease-in-out infinite; }
 
-/* Frosted Glass Bento Containers */
+/* Frosted Glass Bento Containers with iOS Smooth Corners */
 .glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(24px) saturate(130%);
-  -webkit-backdrop-filter: blur(24px) saturate(130%);
-  border: 1px solid var(--glass-border);
+  background: var(--bg-card);
+  backdrop-filter: blur(35px) saturate(180%);
+  -webkit-backdrop-filter: blur(35px) saturate(180%);
+  border: 1px solid var(--border-color);
   box-shadow: var(--glass-shadow);
-  border-radius: 20px;
+  border-radius: 24px; /* Squircle appearance */
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, box-shadow;
 }
 
 .glass:hover {
   transform: translateY(-4px);
-  background: rgba(255, 255, 255, 0.65);
-  box-shadow: 0 16px 48px -10px rgba(15, 118, 110, 0.1);
-  border-color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 20px 48px -10px rgba(0, 122, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.9);
 }
 
-/* Layout */
+/* Layout - iOS Floating Sidebar concept */
 .app-container {
   display: flex;
   min-height: 100vh;
+  padding: 20px;
+  gap: 20px;
 }
 
-/* Frosted Sidebar styling */
 .sidebar {
   width: var(--sidebar-width);
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-right: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(35px) saturate(180%);
+  -webkit-backdrop-filter: blur(35px) saturate(180%);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--glass-shadow);
+  border-radius: 28px;
   padding: 30px 20px;
   display: flex;
   flex-direction: column;
   position: fixed;
-  height: 100vh;
+  height: calc(100vh - 40px);
   z-index: 100;
 }
 
@@ -152,20 +150,19 @@ h1, h2, h3, h4, h5, h6 {
 
 .sidebar-logo-text {
   font-family: var(--font-heading);
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--accent-teal), var(--accent-sand));
+  background: linear-gradient(135deg, var(--ios-blue), var(--ios-purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.04em;
-  text-transform: uppercase;
 }
 
 .sidebar-menu {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   flex-grow: 1;
 }
 
@@ -173,32 +170,31 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
-  border-radius: 12px;
+  padding: 12px 18px;
+  border-radius: 16px; /* Smooth iOS pill style */
   color: var(--text-secondary);
   text-decoration: none;
   border: none;
   background: transparent;
   cursor: pointer;
   font-family: var(--font-main);
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 500;
   text-align: left;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sidebar-item:hover {
-  color: var(--accent-teal);
-  background-color: var(--accent-teal-glow);
-  transform: translateX(3px);
+  color: var(--ios-blue);
+  background-color: var(--ios-blue-glow);
+  transform: translateX(4px);
 }
 
 .sidebar-item.active {
-  color: var(--accent-teal);
-  background-color: var(--accent-teal-glow);
-  box-shadow: inset 4px 0 0 0 var(--accent-teal);
-  padding-left: 18px;
+  color: var(--ios-blue);
+  background-color: var(--ios-blue-glow);
   font-weight: 600;
+  box-shadow: inset 4px 0 0 0 var(--ios-blue);
 }
 
 .sidebar-footer {
@@ -213,9 +209,9 @@ h1, h2, h3, h4, h5, h6 {
 /* Content Area */
 .main-content {
   flex-grow: 1;
-  margin-left: var(--sidebar-width);
-  padding: 40px;
-  min-height: 100vh;
+  margin-left: calc(var(--sidebar-width) + 20px);
+  padding: 20px;
+  min-height: calc(100vh - 40px);
   display: flex;
   flex-direction: column;
 }
@@ -223,18 +219,19 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 900px) {
   .app-container {
     flex-direction: column;
+    padding: 10px;
+    gap: 10px;
   }
   .sidebar {
     position: relative;
     width: 100%;
     height: auto;
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
+    border-radius: 20px;
     padding: 20px;
   }
   .main-content {
     margin-left: 0;
-    padding: 20px;
+    padding: 10px;
   }
   .sidebar-menu {
     flex-direction: row;
@@ -246,7 +243,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* Metric Widgets Grid (Bento Style) */
+/* Metric Widgets Bento Grid */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -259,12 +256,13 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-radius: 20px;
+  border-radius: 24px;
   border: 1px solid var(--border-color);
+  background: var(--bg-card);
 }
 
 .metric-info h3 {
-  font-size: 11.5px;
+  font-size: 12px;
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -277,28 +275,28 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 800;
   font-family: var(--font-heading);
   color: var(--text-primary);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
 }
 
 .metric-icon {
   width: 44px;
   height: 44px;
-  border-radius: 12px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 18px;
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.7);
   border: 1px solid var(--inner-border);
 }
 
-/* Opaque/High Readability Tables for Accessibility */
+/* Opaque/High Readability Tables for iOS */
 .table-container {
   overflow-x: auto;
-  border-radius: 16px;
+  border-radius: 24px;
   border: 1px solid var(--inner-border);
-  background-color: rgba(255, 255, 255, 0.85); /* Frosty Sand paper representation */
-  box-shadow: 0 4px 24px -10px rgba(15, 118, 110, 0.05);
+  background-color: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--glass-shadow);
 }
 
 .modern-table {
@@ -309,8 +307,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modern-table th {
-  background-color: rgba(15, 118, 110, 0.02);
-  padding: 16px 20px;
+  background-color: rgba(0, 0, 0, 0.01);
+  padding: 18px 24px;
   color: var(--text-secondary);
   font-weight: 600;
   border-bottom: 1px solid var(--inner-border);
@@ -318,7 +316,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modern-table td {
-  padding: 16px 20px;
+  padding: 16px 24px;
   border-bottom: 1px solid var(--inner-border);
   color: var(--text-primary);
   vertical-align: middle;
@@ -329,7 +327,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modern-table tbody tr:hover {
-  background-color: rgba(15, 118, 110, 0.015);
+  background-color: rgba(0, 122, 255, 0.015);
 }
 
 /* Minimalist forms & Controls */
@@ -348,35 +346,36 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .form-control {
-  background-color: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(15, 118, 110, 0.15);
-  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
   padding: 12px 16px;
   color: var(--text-primary);
   font-family: var(--font-main);
   font-size: 13.5px;
   width: 100%;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
 }
 
 .form-control:focus {
   outline: none;
-  border-color: var(--accent-teal);
+  border-color: var(--ios-blue);
   background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
 }
 
-/* Clean Minimalistic Buttons */
+/* Clean iOS Style Pill Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 20px;
-  border-radius: 10px;
+  padding: 10px 22px;
+  border-radius: 9999px; /* System pill style */
   border: 1px solid transparent;
   font-family: var(--font-main);
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -384,48 +383,49 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
 }
 
 .btn-primary {
-  background-color: var(--accent-teal);
+  background-color: var(--ios-blue);
   color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.15);
 }
 
 .btn-primary:hover {
-  background-color: #0d5c58;
-  box-shadow: 0 4px 14px rgba(15, 118, 110, 0.2);
+  background-color: #0062cc;
+  box-shadow: 0 4px 16px rgba(0, 122, 255, 0.25);
   transform: translateY(-1px);
 }
 
 .btn-secondary {
-  background-color: rgba(255, 255, 255, 0.8);
-  border-color: rgba(15, 118, 110, 0.15);
+  background-color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(0, 0, 0, 0.08);
   color: var(--text-primary);
 }
 
 .btn-secondary:hover {
   background-color: #fff;
-  border-color: rgba(15, 118, 110, 0.25);
-  box-shadow: 0 4px 12px rgba(15,118,110,0.03);
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
 }
 
 .btn-danger {
-  background-color: rgba(225, 29, 72, 0.08);
-  border-color: rgba(225, 29, 72, 0.15);
-  color: var(--status-danger);
+  background-color: rgba(255, 59, 48, 0.08);
+  border-color: rgba(255, 59, 48, 0.15);
+  color: var(--ios-red);
 }
 
 .btn-danger:hover {
-  background-color: var(--status-danger);
+  background-color: var(--ios-red);
   color: #fff;
-  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15);
+  box-shadow: 0 4px 12px rgba(255, 59, 48, 0.2);
 }
 
 /* Status Badges */
 .badge {
   display: inline-flex;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 9999px;
   font-size: 11px;
   font-weight: 700;
@@ -434,30 +434,32 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .badge-danger {
-  background-color: rgba(225, 29, 72, 0.08);
-  border-color: rgba(225, 29, 72, 0.15);
-  color: var(--status-danger);
+  background-color: rgba(255, 59, 48, 0.08);
+  border-color: rgba(255, 59, 48, 0.15);
+  color: var(--ios-red);
 }
 
 .badge-warning {
-  background-color: rgba(217, 119, 6, 0.08);
-  border-color: rgba(217, 119, 6, 0.15);
-  color: var(--status-warning);
+  background-color: rgba(255, 149, 0, 0.08);
+  border-color: rgba(255, 149, 0, 0.15);
+  color: var(--ios-orange);
 }
 
 .badge-success {
-  background-color: rgba(15, 118, 110, 0.08);
-  border-color: rgba(15, 118, 110, 0.15);
-  color: var(--status-success);
+  background-color: rgba(52, 199, 89, 0.08);
+  border-color: rgba(52, 199, 89, 0.15);
+  color: var(--ios-green);
 }
 
 /* Excel simulator Context Menu */
 .excel-context-menu {
   position: absolute;
-  background: rgba(255,255,255,0.95);
-  border: 1px solid rgba(0,0,0,0.1);
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
   padding: 6px 0;
   z-index: 500;
   list-style: none;
@@ -476,13 +478,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .excel-context-item:hover {
-  background-color: var(--accent-teal-glow);
-  color: var(--accent-teal);
+  background-color: var(--ios-blue-glow);
+  color: var(--ios-blue);
 }
 
 /* Print Layout Paper representation */
 .print-paper {
-  box-shadow: 0 0 30px rgba(0,0,0,0.1);
-  border-radius: 6px;
-  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 0 30px rgba(0,0,0,0.06);
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.06);
 }
