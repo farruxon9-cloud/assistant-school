@@ -994,8 +994,8 @@ function App() {
 
       {/* MODAL: ADD STUDENT WITH OCR SIMULATOR */}
       {showAddModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div className="glass" style={{ width: '90%', maxWidth: '640px', padding: '32px', backgroundColor: 'var(--bg-secondary)', maxHeight: '90vh', overflowY: 'auto' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(255, 255, 255, 0.3)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div className="glass" style={{ width: '90%', maxWidth: '640px', padding: '32px', backgroundColor: 'rgba(255, 255, 255, 0.95)', maxHeight: '90vh', overflowY: 'auto' }}>
             <h2 style={{ fontSize: '20px', marginBottom: '24px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
               {t('ocrTitle')}
             </h2>
@@ -1069,7 +1069,7 @@ function App() {
 
       {/* MODAL: DOCUMENT PRINT PREVIEW (QR + MUHR) */}
       {showPrintModal && printStudent && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, overflowY: 'auto' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(255, 255, 255, 0.3)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, overflowY: 'auto' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '90%', maxWidth: '800px', margin: '40px 0' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', color: '#fff' }}>
               <h3>{t('printPreviewTitle')}</h3>

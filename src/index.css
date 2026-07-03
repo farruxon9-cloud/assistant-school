@@ -1,4 +1,4 @@
-/* Premium iOS Glassmorphic & Minimalist CSS for Assistant School */
+/* Premium iOS Glassmorphism & Minimalist CSS for Assistant School */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
 
@@ -16,13 +16,13 @@
   --bg-card: rgba(255, 255, 255, 0.45); /* Highly reflective glass */
   
   --text-primary: #1c1c1e; /* iOS Dark System Text */
-  --text-secondary: #55555c;
+  --text-secondary: #48484a;
   --text-muted: #8e8e93;
   
-  --border-color: rgba(255, 255, 255, 0.65); /* Fine glass border */
+  --border-color: rgba(255, 255, 255, 0.7); /* Fine glass border */
   --inner-border: rgba(0, 0, 0, 0.05);
   
-  --glass-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.06);
+  --glass-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.05);
 
   --font-main: 'Inter', -apple-system, sans-serif;
   --font-heading: 'Outfit', -apple-system, sans-serif;
@@ -44,13 +44,11 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   
-  /* Vibrant & Bright iOS-Inspired Mesh Gradient Background */
+  /* Bright white/blue base with tiny purple spot, no pink */
   background: 
-    radial-gradient(circle at 15% 15%, rgba(0, 122, 255, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 85% 10%, rgba(175, 82, 222, 0.18) 0%, transparent 45%),
-    radial-gradient(circle at 50% 85%, rgba(52, 199, 89, 0.1) 0%, transparent 40%),
-    radial-gradient(circle at 90% 90%, rgba(255, 149, 0, 0.12) 0%, transparent 35%),
-    #f2f2f7;
+    radial-gradient(circle at 15% 15%, rgba(0, 122, 255, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 85% 10%, rgba(175, 82, 222, 0.05) 0%, transparent 20%),
+    #f4f5f9;
   background-attachment: fixed;
 }
 
@@ -113,7 +111,7 @@ h1, h2, h3, h4, h5, h6 {
 .glass:hover {
   transform: translateY(-4px);
   background: rgba(255, 255, 255, 0.6);
-  box-shadow: 0 20px 48px -10px rgba(0, 122, 255, 0.1);
+  box-shadow: 0 20px 48px -10px rgba(0, 122, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.9);
 }
 
@@ -295,7 +293,7 @@ h1, h2, h3, h4, h5, h6 {
   overflow-x: auto;
   border-radius: 24px;
   border: 1px solid var(--inner-border);
-  background-color: rgba(255, 255, 255, 0.82);
+  background-color: rgba(255, 255, 255, 0.85);
   box-shadow: var(--glass-shadow);
 }
 
@@ -339,18 +337,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .form-label {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: #1e293b !important; /* Force high-contrast dark slate color for labels */
   font-family: var(--font-heading);
 }
 
 .form-control {
   background-color: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 14px;
   padding: 12px 16px;
-  color: var(--text-primary);
+  color: #1c1c1e !important;
   font-family: var(--font-main);
   font-size: 13.5px;
   width: 100%;
@@ -387,13 +385,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary {
-  background-color: var(--ios-blue);
-  color: #fff;
+  background-color: var(--ios-blue) !important;
+  color: #ffffff !important;
   box-shadow: 0 2px 8px rgba(0, 122, 255, 0.15);
 }
 
+.btn-primary * {
+  color: #ffffff !important;
+}
+
 .btn-primary:hover {
-  background-color: #0062cc;
+  background-color: #0062cc !important;
   box-shadow: 0 4px 16px rgba(0, 122, 255, 0.25);
   transform: translateY(-1px);
 }
