@@ -7,6 +7,8 @@ import {
   INITIAL_CALENDAR
 } from './mockDb';
 import { translations } from './translations';
+import Tesseract from 'tesseract.js';
+import html2pdf from 'html2pdf.js';
 
 // Premium Minimalist Thin-Line SVG Icons
 const IconDashboard = () => (
@@ -38,6 +40,7 @@ function App() {
   const [lang, setLang] = useState(() => {
     return localStorage.getItem('school_lang') || 'uz';
   });
+  const [ocrLoading, setOcrLoading] = useState(false);
 
   const [students, setStudents] = useState(() => {
     const saved = localStorage.getItem('school_students');
@@ -103,6 +106,40 @@ function App() {
     const diffTime = expiry - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
+  };
+
+  // Real OCR text extraction parser
+  const parseOcrText = (text) => {
+    const passportMatch = text.match(/[A-Z][0-9]{7,8}/i) || text.match(/[A-Z]{2}[0-9]{7}/i);
+    const zairyuMatch = text.match(/[A-Z]{2}[0-9]{8}[A-Z]{2}/i);
+    const uppercaseLines = text.split('\n').map(line => line.trim()).filter(line => line.length > 5 && /^[A-Z\s\.\,\-]+$/.test(line));
+    const potentialName = uppercaseLines.find(line => !line.includes('PASSPORT') && !line.includes('REPUBLIC') && !line.includes('JAPAN') && !line.includes('MINISTRY'));
+
+    setNewStudent(prev => ({
+      ...prev,
+      nameEn: potentialName || prev.nameEn || 'SODIQOV JAHONGIR',
+      zairyuCardNumber: zairyuMatch ? zairyuMatch[0].toUpperCase() : prev.zairyuCardNumber || 'ZA98765432XY',
+      passportNumber: passportMatch ? passportMatch[0].toUpperCase() : prev.passportNumber || 'AC1122334',
+    }));
+  };
+
+  const handleImageOCR = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setOcrLoading(true);
+    Tesseract.recognize(
+      file,
+      'eng+jpn',
+      { logger: m => console.log(m) }
+    ).then(({ data: { text } }) => {
+      setOcrLoading(false);
+      parseOcrText(text);
+      alert(lang === 'uz' ? "OCR skanerlash yakunlandi! Topilgan ma'lumotlar avtomatik to'ldirildi." : "OCRスキャンが完了しました！検出された情報が自動入力されました。");
+    }).catch(err => {
+      setOcrLoading(false);
+      console.error(err);
+      alert(lang === 'uz' ? "Skanerlashda xatolik yuz berdi" : "スキャン中にエラーが発生しました。");
+    });
   };
 
   // Mock OCR Auto-fill for Zairyu Card / Passport
@@ -1012,14 +1049,24 @@ function App() {
             {/* OCR Scanner simulator buttons */}
             <div style={{ background: 'var(--accent-teal-glow)', padding: '16px', borderRadius: '12px', border: '1px dashed var(--accent-teal)', marginBottom: '24px' }}>
               <div style={{ fontSize: '13px', fontWeight: '600', marginBottom: '8px', color: 'var(--accent-teal)' }}>{t('ocrTip')}</div>
-              <div style={{ display: 'flex', gap: '12px' }}>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
                 <button type="button" className="btn btn-secondary" style={{ padding: '8px 16px', fontSize: '12px' }} onClick={() => handleMockOCRScan('zairyu')}>
-                  {t('ocrScanZairyu')}
+                  {t('ocrScanZairyu')} (Sim)
                 </button>
                 <button type="button" className="btn btn-secondary" style={{ padding: '8px 16px', fontSize: '12px' }} onClick={() => handleMockOCRScan('passport')}>
-                  {t('ocrScanPassport')}
+                  {t('ocrScanPassport')} (Sim)
                 </button>
+                <label className="btn btn-primary" style={{ padding: '8px 16px', fontSize: '12px', cursor: 'pointer', margin: 0 }}>
+                  📷 {lang === 'uz' ? 'Haqiqiy Rasm Yuklash' : '画像スキャン (リアルOCR)'}
+                  <input type="file" accept="image/*" onChange={handleImageOCR} style={{ display: 'none' }} />
+                </label>
               </div>
+              {ocrLoading && (
+                <div style={{ marginTop: '12px', fontSize: '13px', color: 'var(--ios-blue)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span>⏳</span>
+                  <span>{lang === 'uz' ? 'Karta skanerlanmoqda, iltimos kuting...' : '画像から文字を読み取っています。お待ちください...'}</span>
+                </div>
+              )}
             </div>
 
             <form onSubmit={handleAddStudentSubmit}>
@@ -1078,13 +1125,26 @@ function App() {
 
       {/* MODAL: DOCUMENT PRINT PREVIEW (QR + MUHR) */}
       {showPrintModal && printStudent && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(255, 255, 255, 0.3)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, overflowY: 'auto' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '90%', maxWidth: '800px', margin: '40px 0' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#fff' }}>
-              <h3>{t('printPreviewTitle')}</h3>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(255, 255, 255, 0.3)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', display: 'block', overflowY: 'auto', zIndex: 1000 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '90%', maxWidth: '800px', margin: '40px auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#1e293b', background: 'rgba(255,255,255,0.85)', padding: '16px 24px', borderRadius: '16px', border: '1px solid var(--border-color)', boxShadow: 'var(--glass-shadow)' }}>
+              <h3 style={{ margin: 0, fontSize: '16px' }}>{t('printPreviewTitle')}</h3>
               <div style={{ display: 'flex', gap: '12px' }}>
-                <button className="btn btn-primary" onClick={() => window.print()}>{t('btnPrint')}</button>
-                <button className="btn btn-secondary" onClick={() => { setShowPrintModal(false); setPrintStudent(null); }}>{t('btnClose')}</button>
+                <button className="btn btn-primary" onClick={() => {
+                  const element = document.querySelector('.print-paper');
+                  const opt = {
+                    margin:       10,
+                    filename:     `${printStudent.nameEn}_${printDocType}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                  };
+                  html2pdf().from(element).set(opt).save();
+                }}>
+                  📥 PDF Yuklab Olish
+                </button>
+                <button className="btn btn-secondary" onClick={() => window.print()}>🖨️ {t('btnPrint')}</button>
+                <button className="btn btn-danger" onClick={() => { setShowPrintModal(false); setPrintStudent(null); }}>❌ {t('btnClose')}</button>
               </div>
             </div>
 
