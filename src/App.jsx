@@ -294,7 +294,16 @@ function App() {
       {/* 1. Sidebar Nav */}
       <aside className="sidebar">
         <div className="sidebar-logo">
-          <span style={{ fontSize: '24px' }}>🏫</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#logo-grad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
+            <defs>
+              <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="var(--ios-blue)" />
+                <stop offset="100%" stopColor="var(--ios-purple)" />
+              </linearGradient>
+            </defs>
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+            <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path>
+          </svg>
           <div className="sidebar-logo-text">Assist School</div>
         </div>
         
@@ -396,7 +405,8 @@ function App() {
 
             {getVisaAlertCount() > 0 && (
               <div className="badge badge-danger" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                ⚠️ {t('visaAlert')}: {getVisaAlertCount()}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                {t('visaAlert')}: {getVisaAlertCount()}
               </div>
             )}
           </div>
@@ -412,14 +422,18 @@ function App() {
                   <h3>{t('totalStudents')}</h3>
                   <div className="metric-value">{students.length}</div>
                 </div>
-                <div className="metric-icon" style={{ color: 'var(--accent-teal)' }}>👥</div>
+                <div className="metric-icon" style={{ color: 'var(--ios-blue)' }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </div>
               </div>
               <div className="metric-card glass float-card-2">
                 <div className="metric-info">
                   <h3>{t('activeClasses')}</h3>
                   <div className="metric-value">{classes.length}</div>
                 </div>
-                <div className="metric-icon" style={{ color: 'var(--accent-sand)' }}>🏫</div>
+                <div className="metric-icon" style={{ color: 'var(--ios-purple)' }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+                </div>
               </div>
               <div className="metric-card glass float-card-3">
                 <div className="metric-info">
@@ -428,14 +442,19 @@ function App() {
                     {(students.reduce((acc, s) => acc + s.attendancePercent, 0) / students.length).toFixed(1)}%
                   </div>
                 </div>
-                <div className="metric-icon" style={{ color: 'var(--status-success)' }}>📈</div>
+                <div className="metric-icon" style={{ color: 'var(--ios-green)' }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                </div>
               </div>
             </div>
 
             {/* Main Dashboard Alerts & Lists */}
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
               <div className="glass" style={{ padding: '24px' }}>
-                <h2 style={{ fontSize: '18px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>⚠️ {t('visaAlertTitle')}</h2>
+                <h2 style={{ fontSize: '18px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ios-orange)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                  {t('visaAlertTitle')}
+                </h2>
                 
                 {/* Visa Danger Alert List */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -481,7 +500,10 @@ function App() {
 
               {/* Today's schedule / Calendar Widget */}
               <div className="glass" style={{ padding: '24px' }}>
-                <h2 style={{ fontSize: '18px', marginBottom: '16px' }}>📅 {t('todayLessons')}</h2>
+                <h2 style={{ fontSize: '18px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  {t('todayLessons')}
+                </h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   <div style={{ padding: '12px', borderBottom: '1px solid var(--inner-border)' }}>
                     <div style={{ fontSize: '12px', color: 'var(--accent-teal)', fontWeight: '600' }}>09:00 - 10:30 (1-2)</div>
@@ -511,7 +533,10 @@ function App() {
         {activeTab === 'master' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div className="glass" style={{ padding: '24px' }}>
-              <h2 style={{ fontSize: '18px', marginBottom: '16px' }}>📅 {t('calendarTitle')}</h2>
+              <h2 style={{ fontSize: '18px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                {t('calendarTitle')}
+              </h2>
               <div className="table-container">
                 <table className="modern-table">
                   <thead>
@@ -542,7 +567,10 @@ function App() {
             </div>
 
             <div className="glass" style={{ padding: '24px' }}>
-              <h2 style={{ fontSize: '18px', marginBottom: '16px' }}>👥 {t('teacherTitle')}</h2>
+              <h2 style={{ fontSize: '18px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-3-3.87"></path><path d="M9 21v-2a4 4 0 0 0-4-4H3a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                {t('teacherTitle')}
+              </h2>
               <div className="table-container">
                 <table className="modern-table">
                   <thead>
@@ -582,7 +610,8 @@ function App() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
-                ➕ {t('addStudent')}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                {t('addStudent')}
               </button>
             </div>
 
@@ -641,7 +670,8 @@ function App() {
         {selectedStudent && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <button className="btn btn-secondary" style={{ alignSelf: 'flex-start' }} onClick={() => setSelectedStudent(null)}>
-              ⬅️ {t('backToList')}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+              {t('backToList')}
             </button>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '24px' }}>
@@ -999,13 +1029,16 @@ function App() {
                       <td>
                         <div style={{ display: 'flex', gap: '8px' }}>
                           <button className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }} onClick={() => { setPrintDocType('enrollment'); setPrintStudent(s); setShowPrintModal(true); }}>
-                            📜 {lang === 'uz' ? 'O\'qish Joyidan' : '在学証明'}
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                            {lang === 'uz' ? 'O\'qish Joyidan' : '在学証明'}
                           </button>
                           <button className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }} onClick={() => { setPrintDocType('grades'); setPrintStudent(s); setShowPrintModal(true); }}>
-                            📊 {lang === 'uz' ? 'Baholar & Davomat' : '成績・出席'}
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                            {lang === 'uz' ? 'Baholar & Davomat' : '成績・出席'}
                           </button>
                           <button className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }} onClick={() => { setPrintDocType('invoice'); setPrintStudent(s); setShowPrintModal(true); }}>
-                            💸 {lang === 'uz' ? 'Invoys' : '請求書'}
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            {lang === 'uz' ? 'Invoys' : '請求書'}
                           </button>
                         </div>
                       </td>
@@ -1021,11 +1054,26 @@ function App() {
       {/* Simulated Context Menu for Excel-like operations */}
       {contextMenu && (
         <ul className="excel-context-menu" style={{ top: contextMenu.y, left: contextMenu.x }}>
-          <li className="excel-context-item" onClick={() => executeContextAction(t('excelContextInsert'))}>➕ {t('excelContextInsert')}</li>
-          <li className="excel-context-item" onClick={() => executeContextAction(t('excelContextDelete'))}>❌ {t('excelContextDelete')}</li>
-          <li className="excel-context-item" onClick={() => executeContextAction(t('excelContextJump'))}>➡️ {t('excelContextJump')}</li>
-          <li className="excel-context-item" onClick={() => executeContextAction(t('excelContextCopy'))}>📋 {t('excelContextCopy')}</li>
-          <li className="excel-context-item" onClick={() => executeContextAction(t('excelContextPaste'))}>📥 {t('excelContextPaste')}</li>
+          <li className="excel-context-item" onClick={() => executeContextAction(t('excelContextInsert'))}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            {t('excelContextInsert')}
+          </li>
+          <li className="excel-context-item" onClick={() => executeContextAction(t('excelContextDelete'))}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            {t('excelContextDelete')}
+          </li>
+          <li className="excel-context-item" onClick={() => executeContextAction(t('excelContextJump'))}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            {t('excelContextJump')}
+          </li>
+          <li className="excel-context-item" onClick={() => executeContextAction(t('excelContextCopy'))}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            {t('excelContextCopy')}
+          </li>
+          <li className="excel-context-item" onClick={() => executeContextAction(t('excelContextPaste'))}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+            {t('excelContextPaste')}
+          </li>
         </ul>
       )}
 
