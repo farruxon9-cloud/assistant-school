@@ -994,11 +994,20 @@ function App() {
 
       {/* MODAL: ADD STUDENT WITH OCR SIMULATOR */}
       {showAddModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(255, 255, 255, 0.3)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div className="glass" style={{ width: '90%', maxWidth: '640px', padding: '32px', backgroundColor: 'rgba(255, 255, 255, 0.95)', maxHeight: '90vh', overflowY: 'auto' }}>
-            <h2 style={{ fontSize: '20px', marginBottom: '24px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
-              {t('ocrTitle')}
-            </h2>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(255, 255, 255, 0.3)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', display: 'block', overflowY: 'auto', zIndex: 1000 }}>
+          <div className="glass" style={{ width: '90%', maxWidth: '640px', padding: '32px', backgroundColor: 'rgba(255, 255, 255, 0.95)', margin: '40px auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
+              <h2 style={{ fontSize: '20px', margin: 0 }}>
+                {t('ocrTitle')}
+              </h2>
+              <button 
+                type="button" 
+                onClick={() => setShowAddModal(false)}
+                style={{ background: 'transparent', border: 'none', fontSize: '20px', cursor: 'pointer', color: 'var(--text-muted)' }}
+              >
+                ❌
+              </button>
+            </div>
             
             {/* OCR Scanner simulator buttons */}
             <div style={{ background: 'var(--accent-teal-glow)', padding: '16px', borderRadius: '12px', border: '1px dashed var(--accent-teal)', marginBottom: '24px' }}>
