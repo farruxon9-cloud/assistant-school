@@ -92,7 +92,21 @@ export const translations = {
     excelContextDelete: 'Qatorni O\'chirish',
     excelContextJump: 'Ustunga O\'tish',
     excelContextCopy: 'Nusxalash',
-    excelContextPaste: 'Joylashtirish'
+    excelContextPaste: 'Joylashtirish',
+    
+    // PRO-MAX New Translations
+    notepad: 'Aqlli Bloknot',
+    teacherWorkspace: 'O\'qituvchi Kabineti',
+    studentView: 'Talaba Kabineti (Virtual Phone)',
+    adminView: 'Admin Ko\'rinishi',
+    arubaitoTracker: 'Arubaito (28 Soat) Nazorati',
+    seatingChart: 'Sekigae (Joy Xaritasi)',
+    lessonLogs: 'Klass Jurnallari',
+    addLog: 'Dars Jurnalini Yozish',
+    documentQueue: 'Hujjat So\'rovlari Navbati',
+    hoursLimit: 'Haftalik Ish Soati',
+    overlimit: '28-soatlik limit buzildi!',
+    counseling: 'Shinro Maslahatlashuv'
   },
   jp: {
     dashboard: 'ダッシュボード',
@@ -109,7 +123,7 @@ export const translations = {
     activeClasses: '稼働クラス数',
     averageAttendance: '平均出席率',
     todayLessons: '本日の授業',
-    upcomingHolidays: '直近の祝日・休日',
+    upcomingHolidays: '直近 of 祝日・休日',
     searchPlaceholder: '学生を検索 (氏名、国籍、ID)...',
     addStudent: '新規学生登録',
     studentId: '学籍番号',
@@ -129,9 +143,9 @@ export const translations = {
     interviewLogs: '面談・指導記録',
     noInterviews: '面談記録はまだ登録されていません。',
     generateDocs: '公式証明書の自動発行',
-    docEnrollment: '📜 在学証明書 発行',
-    docGrades: '📊 成績・出席証明書 発行',
-    docInvoice: '💸 学費請求書 発行',
+    docEnrollment: '📜 在学証明書 发行',
+    docGrades: '📊 成績・出席証明書 发行',
+    docInvoice: '💸 学費請求書 发行',
     className: 'クラス名',
     classLevel: 'クラスレベル',
     headTeacher: '担任教員',
@@ -185,6 +199,20 @@ export const translations = {
     excelContextDelete: '行削除',
     excelContextJump: '列にジャンプ',
     excelContextCopy: 'コピー',
-    excelContextPaste: '貼り付け'
+    excelContextPaste: '貼り付け',
+    
+    // PRO-MAX New Translations
+    notepad: 'スマートノート',
+    teacherWorkspace: '教員用キャビネット',
+    studentView: '学生マイページ (スマホ画面)',
+    adminView: '管理者画面',
+    arubaitoTracker: 'アルバイト(28時間)制限管理',
+    seatingChart: '席替え配置図作成',
+    lessonLogs: 'クラス授業ログ',
+    addLog: '授業日誌を登録',
+    documentQueue: '証明書発行申請キュー',
+    hoursLimit: '週労働時間',
+    overlimit: '28時間超過アラート！',
+    counseling: '進路指導面談'
   }
 };

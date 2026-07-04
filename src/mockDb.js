@@ -63,6 +63,12 @@ export const INITIAL_STUDENTS = [
     classId: 'cls1',
     attendancePercent: 94.5,
     attendance: generateMockAttendance(95),
+    arubaito: {
+      jobs: [
+        { id: 'j1', name: '7-Eleven Shibuya', hoursPerWeek: 16 },
+        { id: 'j2', name: 'Yamato Transport Logistics', hoursPerWeek: 10 }
+      ] // Total 26 hrs (Yellow caution!)
+    },
     grades: {
       internal: { kanji: 'A', listening: 'B', reading: 'A', writing: 'B', total: 'A' },
       jlpt: { date: '2025-12-07', level: 'N3', score: 145, result: 'Pass' },
@@ -96,6 +102,11 @@ export const INITIAL_STUDENTS = [
     classId: 'cls1',
     attendancePercent: 74.2, // Low Attendance Alert! (< 80%)
     attendance: generateMockAttendance(72),
+    arubaito: {
+      jobs: [
+        { id: 'j3', name: 'Gyoza Tavern Kitchen', hoursPerWeek: 29 }
+      ] // Total 29 hrs (Red Danger alert! Exceeds 28 hrs limit)
+    },
     grades: {
       internal: { kanji: 'B', listening: 'C', reading: 'B', writing: 'C', total: 'B' },
       jlpt: { date: '2025-12-07', level: 'N4', score: 110, result: 'Pass' },
@@ -128,6 +139,11 @@ export const INITIAL_STUDENTS = [
     classId: 'cls2',
     attendancePercent: 98.8,
     attendance: generateMockAttendance(99),
+    arubaito: {
+      jobs: [
+        { id: 'j4', name: 'WeChat Translations', hoursPerWeek: 12 }
+      ] // Total 12 hrs (Safe green)
+    },
     grades: {
       internal: { kanji: 'A', listening: 'A', reading: 'A', writing: 'A', total: 'A' },
       jlpt: { date: '2025-12-07', level: 'N2', score: 168, result: 'Pass' },
@@ -152,3 +168,21 @@ export const INITIAL_CALENDAR = {
     { date: '2026-08-12', reason: 'Yozgi Ta\'til' }
   ]
 };
+
+// Smart Reminders / Notepad Tasks Database
+export const INITIAL_TASKS = [
+  { id: 'task1', title: 'Kanoatov Farrux bilan suhbat o\'tkazish', studentId: '20260001', dueDate: '2026-07-07', category: 'Suhbat', status: 'Pending' }, // Exactly 7 days left (1 week)
+  { id: 'task2', title: 'Anna Smith kontrakt to\'lovi ogohlantirishi', studentId: '20260002', dueDate: '2026-07-03', category: 'To\'lov', status: 'Pending' }, // Exactly 3 days left
+  { id: 'task3', title: 'Immigratsiya uchun CoE formalarini tayyorlash', studentId: null, dueDate: '2026-06-30', category: 'Hujjat', status: 'Pending' } // Due Today!
+];
+
+// O'qituvchilar dars jurnali (Class journals & substitute handoffs)
+export const INITIAL_LESSON_LOGS = [
+  { id: 'log1', classId: 'cls1', date: '2026-06-29', textbook: 'Minna no Nihongo Chukyu I', lesson: '15-Dars (Shart mayli)', homework: 'Mondai 4, 5-savollar', notes: 'Talabalar grammatikani yaxshi o\'zlashtirdi. Anna Smith biroz darsda charchagan ko\'rindi.', teacherId: 't1' }
+];
+
+// Hujjat so'rovlari navbati (Document request queue)
+export const INITIAL_DOCUMENT_REQUESTS = [
+  { id: 'req1', studentId: '20260001', docType: 'enrollment', requestDate: '2026-06-29', status: 'Pending' },
+  { id: 'req2', studentId: '20260002', docType: 'grades', requestDate: '2026-06-29', status: 'Pending' }
+];
