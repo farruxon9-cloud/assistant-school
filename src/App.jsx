@@ -677,34 +677,41 @@ function App() {
                     const isCompleted = tObj.status === 'Completed';
                     const daysLeft = Math.ceil((new Date(tObj.dueDate) - new Date('2026-06-30')) / (1000 * 60 * 60 * 24));
                     
-                    let cardColor = isCompleted ? 'rgba(0, 0, 0, 0.02)' : 'rgba(52, 199, 89, 0.08)'; // Green
-                    let borderCol = isCompleted ? 'var(--inner-border)' : 'var(--ios-green)';
-                    let alertText = isCompleted ? (lang === 'uz' ? 'Bajarildi' : '完了済') : (lang === 'uz' ? 'Xavfsiz' : '期限内');
+                    let cardColor = 'rgba(52, 199, 89, 0.08)'; // Green
+                    let borderCol = 'var(--ios-green)';
+                    let alertText = lang === 'uz' ? 'Xavfsiz' : '期限内';
 
-                    if (!isCompleted) {
-                      if (daysLeft === 0) {
-                        cardColor = 'rgba(255, 59, 48, 0.08)'; // Red
-                        borderCol = 'var(--ios-red)';
-                        alertText = lang === 'uz' ? 'Bugun bajarilishi shart!' : '本日期限！';
-                      } else if (daysLeft <= 3 && daysLeft > 0) {
-                        cardColor = 'rgba(255, 149, 0, 0.08)'; // Orange
-                        borderCol = 'var(--ios-orange)';
-                        alertText = lang === 'uz' ? '3 Kun qoldi!' : 'あと3日！';
-                      } else if (daysLeft <= 7 && daysLeft > 3) {
-                        cardColor = 'rgba(250, 204, 21, 0.08)'; // Yellow
-                        borderCol = '#eab308';
-                        alertText = lang === 'uz' ? '1 Hafta qoldi' : 'あと1週間';
-                      } else if (daysLeft < 0) {
-                        cardColor = 'rgba(127, 29, 29, 0.08)'; // Dark Red Overdue
-                        borderCol = '#7f1d1d';
-                        alertText = lang === 'uz' ? 'Muddati o\'tgan!' : '期限超過！';
-                      }
+                    if (daysLeft === 0) {
+                      cardColor = isCompleted ? 'rgba(255, 59, 48, 0.03)' : 'rgba(255, 59, 48, 0.08)'; // Red
+                      borderCol = 'var(--ios-red)';
+                      alertText = lang === 'uz' ? 'Bugun bajarilishi shart!' : '本日期限！';
+                    } else if (daysLeft <= 3 && daysLeft > 0) {
+                      cardColor = isCompleted ? 'rgba(255, 149, 0, 0.03)' : 'rgba(255, 149, 0, 0.08)'; // Orange
+                      borderCol = 'var(--ios-orange)';
+                      alertText = lang === 'uz' ? '3 Kun qoldi!' : 'あと3日！';
+                    } else if (daysLeft <= 7 && daysLeft > 3) {
+                      cardColor = isCompleted ? 'rgba(250, 204, 21, 0.03)' : 'rgba(250, 204, 21, 0.08)'; // Yellow
+                      borderCol = '#eab308';
+                      alertText = lang === 'uz' ? '1 Hafta qoldi' : 'あと1週間';
+                    } else if (daysLeft < 0) {
+                      cardColor = isCompleted ? 'rgba(127, 29, 29, 0.03)' : 'rgba(127, 29, 29, 0.08)'; // Dark Red Overdue
+                      borderCol = '#7f1d1d';
+                      alertText = lang === 'uz' ? 'Muddati o\'tgan!' : '期限超過！';
+                    } else if (isCompleted) {
+                      cardColor = 'rgba(0, 0, 0, 0.02)';
+                      borderCol = 'var(--inner-border)';
                     }
+
+                    if (isCompleted) {
+                      alertText = `${alertText} ✓`;
+                    }
+
+                    const opacityVal = isCompleted ? (daysLeft <= 0 ? 0.9 : 0.65) : 1;
 
                     const relStudent = students.find(s => s.id === tObj.studentId);
 
                     return (
-                      <div key={tObj.id} style={{ background: cardColor, border: `1px solid ${isCompleted ? 'rgba(0,0,0,0.06)' : borderCol}`, borderLeft: `6px solid ${borderCol}`, padding: '24px', borderRadius: '18px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '16px', opacity: isCompleted ? 0.6 : 1, transition: 'all 0.3s ease', minHeight: '180px', boxShadow: '0 4px 16px rgba(0,0,0,0.02)' }}>
+                      <div key={tObj.id} style={{ background: cardColor, border: `1px solid ${isCompleted && daysLeft > 7 ? 'rgba(0,0,0,0.06)' : borderCol}`, borderLeft: `6px solid ${borderCol}`, padding: '24px', borderRadius: '18px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '16px', opacity: opacityVal, transition: 'all 0.3s ease', minHeight: '180px', boxShadow: '0 4px 16px rgba(0,0,0,0.02)' }}>
                         <div>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                             <span style={{ display: 'flex', alignItems: 'center', fontSize: '11px', fontWeight: 'bold', color: borderCol }}>
