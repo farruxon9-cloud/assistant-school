@@ -169,11 +169,13 @@ export const INITIAL_CALENDAR = {
   ]
 };
 
-// Smart Reminders / Notepad Tasks Database
 export const INITIAL_TASKS = [
-  { id: 'task1', title: 'Kanoatov Farrux bilan suhbat o\'tkazish', studentId: '20260001', dueDate: '2026-07-07', category: 'Suhbat', status: 'Pending' }, // Exactly 7 days left (1 week)
-  { id: 'task2', title: 'Anna Smith kontrakt to\'lovi ogohlantirishi', studentId: '20260002', dueDate: '2026-07-03', category: 'To\'lov', status: 'Pending' }, // Exactly 3 days left
-  { id: 'task3', title: 'Immigratsiya uchun CoE formalarini tayyorlash', studentId: null, dueDate: '2026-06-30', category: 'Hujjat', status: 'Pending' } // Due Today!
+  { id: 'task1', title: 'Kanoatov Farrux bilan suhbat o\'tkazish (Shinro)', studentId: '20260001', dueDate: '2026-07-07', category: 'Suhbat', status: 'Pending' },
+  { id: 'task2', title: 'Anna Smith kontrakt to\'lovi ogohlantirish xati', studentId: '20260002', dueDate: '2026-07-03', category: 'To\'lov', status: 'Pending' },
+  { id: 'task3', title: 'Immigratsiya (Nyukan) uchun CoE formalarini tekshirish', studentId: null, dueDate: '2026-06-30', category: 'Hujjat', status: 'Pending' },
+  { id: 'task4', title: 'Wang Lei arubaito soatlarini tekshirish', studentId: '20260003', dueDate: '2026-07-01', category: 'Boshqa', status: 'Pending' },
+  { id: 'task5', title: 'JLPT N2 imtihoniga ro\'yxatdan o\'tish arizalari', studentId: null, dueDate: '2026-07-05', category: 'Hujjat', status: 'Pending' },
+  { id: 'task6', title: '2-semestr dars jurnallarini ma\'muriyatga topshirish', studentId: null, dueDate: '2026-06-30', category: 'Boshqa', status: 'Completed' }
 ];
 
 // O'qituvchilar dars jurnali (Class journals & substitute handoffs)
