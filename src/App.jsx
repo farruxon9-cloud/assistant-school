@@ -609,6 +609,15 @@ function App() {
               <button onClick={() => setLang('jp')} style={{ padding: '6px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', background: lang === 'jp' ? 'var(--ios-blue)' : 'transparent', color: lang === 'jp' ? '#fff' : 'var(--text-primary)' }}>JP</button>
             </div>
 
+            <button className="btn btn-secondary" onClick={() => {
+              if (window.confirm(lang === 'uz' ? "Tizim ma'lumotlarini dastlabki holatga qaytarishni xohlaysizmi?" : "デモデータを初期状態にリセットしますか？")) {
+                localStorage.clear();
+                window.location.reload();
+              }
+            }} style={{ padding: '6px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              🔄 {lang === 'uz' ? 'Tozalash' : 'リセット'}
+            </button>
+
             {getVisaAlertCount() > 0 && (
               <div className="badge badge-danger" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
@@ -658,54 +667,76 @@ function App() {
               <h2 style={{ fontSize: '18px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <IconNotepad /> {lang === 'uz' ? 'Dolzarb Bloknot Rejalari' : 'スマート予定ノート'}
               </h2>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
-                {tasks.filter(tObj => tObj.status === 'Pending').map(tObj => {
-                  const daysLeft = Math.ceil((new Date(tObj.dueDate) - new Date('2026-06-30')) / (1000 * 60 * 60 * 24));
-                  let cardColor = 'rgba(52, 199, 89, 0.08)'; // Green
-                  let borderCol = 'var(--ios-green)';
-                  let alertText = lang === 'uz' ? 'Xavfsiz' : '期限内';
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+                {tasks.length === 0 ? (
+                  <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: 'var(--text-secondary)', background: 'rgba(0,0,0,0.01)', borderRadius: '14px', border: '1px dashed var(--border-color)' }}>
+                    {lang === 'uz' ? "Hozircha rejalashtirilgan vazifalar yo'q. Yangi vazifa qo'shish uchun 'Aqlli Bloknot' bo'limiga o'ting." : "現在予定されているタスクはありません。スマートノートメニューから追加できます。"}
+                  </div>
+                ) : (
+                  tasks.map(tObj => {
+                    const isCompleted = tObj.status === 'Completed';
+                    const daysLeft = Math.ceil((new Date(tObj.dueDate) - new Date('2026-06-30')) / (1000 * 60 * 60 * 24));
+                    
+                    let cardColor = isCompleted ? 'rgba(0, 0, 0, 0.02)' : 'rgba(52, 199, 89, 0.08)'; // Green
+                    let borderCol = isCompleted ? 'var(--inner-border)' : 'var(--ios-green)';
+                    let alertText = isCompleted ? (lang === 'uz' ? 'Bajarildi' : '完了済') : (lang === 'uz' ? 'Xavfsiz' : '期限内');
 
-                  if (daysLeft === 0) {
-                    cardColor = 'rgba(255, 59, 48, 0.08)'; // Red
-                    borderCol = 'var(--ios-red)';
-                    alertText = lang === 'uz' ? 'Bugun bajarilishi shart!' : '本日期限！';
-                  } else if (daysLeft <= 3 && daysLeft > 0) {
-                    cardColor = 'rgba(255, 149, 0, 0.08)'; // Orange
-                    borderCol = 'var(--ios-orange)';
-                    alertText = lang === 'uz' ? '3 Kun qoldi!' : 'あと3日！';
-                  } else if (daysLeft <= 7 && daysLeft > 3) {
-                    cardColor = 'rgba(250, 204, 21, 0.08)'; // Yellow
-                    borderCol = '#eab308';
-                    alertText = lang === 'uz' ? '1 Hafta qoldi' : 'あと1週間';
-                  } else if (daysLeft < 0) {
-                    cardColor = 'rgba(127, 29, 29, 0.08)'; // Dark Red Overdue
-                    borderCol = '#7f1d1d';
-                    alertText = lang === 'uz' ? 'Muddati o\'tgan!' : '期限超過！';
-                  }
+                    if (!isCompleted) {
+                      if (daysLeft === 0) {
+                        cardColor = 'rgba(255, 59, 48, 0.08)'; // Red
+                        borderCol = 'var(--ios-red)';
+                        alertText = lang === 'uz' ? 'Bugun bajarilishi shart!' : '本日期限！';
+                      } else if (daysLeft <= 3 && daysLeft > 0) {
+                        cardColor = 'rgba(255, 149, 0, 0.08)'; // Orange
+                        borderCol = 'var(--ios-orange)';
+                        alertText = lang === 'uz' ? '3 Kun qoldi!' : 'あと3日！';
+                      } else if (daysLeft <= 7 && daysLeft > 3) {
+                        cardColor = 'rgba(250, 204, 21, 0.08)'; // Yellow
+                        borderCol = '#eab308';
+                        alertText = lang === 'uz' ? '1 Hafta qoldi' : 'あと1週間';
+                      } else if (daysLeft < 0) {
+                        cardColor = 'rgba(127, 29, 29, 0.08)'; // Dark Red Overdue
+                        borderCol = '#7f1d1d';
+                        alertText = lang === 'uz' ? 'Muddati o\'tgan!' : '期限超過！';
+                      }
+                    }
 
-                  const relStudent = students.find(s => s.id === tObj.studentId);
+                    const relStudent = students.find(s => s.id === tObj.studentId);
 
-                  return (
-                    <div key={tObj.id} style={{ background: cardColor, borderLeft: `5px solid ${borderCol}`, padding: '16px', borderRadius: '14px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '12px' }}>
-                      <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span className="badge" style={{ borderColor: borderCol, color: borderCol, background: '#fff' }}>{tObj.category}</span>
-                          <span style={{ fontSize: '11px', fontWeight: 'bold', color: borderCol }}>{alertText}</span>
-                        </div>
-                        <h4 style={{ fontSize: '14px', marginTop: '8px', fontWeight: '600' }}>{tObj.title}</h4>
-                        {relStudent && (
-                          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                            Talaba: {relStudent.nameEn} ({relStudent.id})
+                    return (
+                      <div key={tObj.id} style={{ background: cardColor, border: `1px solid ${isCompleted ? 'rgba(0,0,0,0.06)' : borderCol}`, borderLeft: `6px solid ${borderCol}`, padding: '24px', borderRadius: '18px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '16px', opacity: isCompleted ? 0.6 : 1, transition: 'all 0.3s ease', minHeight: '180px', boxShadow: '0 4px 16px rgba(0,0,0,0.02)' }}>
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                            <span style={{ display: 'flex', alignItems: 'center', fontSize: '11px', fontWeight: 'bold', color: borderCol }}>
+                              {tObj.category === 'Suhbat' && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '6px'}}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>}
+                              {tObj.category === 'To\'lov' && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '6px'}}><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>}
+                              {tObj.category === 'Hujjat' && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '6px'}}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>}
+                              {tObj.category === 'Boshqa' && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '6px'}}><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>}
+                              {tObj.category}
+                            </span>
+                            <span className="badge" style={{ borderColor: borderCol, color: borderCol, background: '#fff', fontSize: '10px' }}>{alertText}</span>
                           </div>
-                        )}
-                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>Muddati: {tObj.dueDate}</div>
+                          <h4 style={{ fontSize: '15px', fontWeight: '700', textDecoration: isCompleted ? 'line-through' : 'none', color: isCompleted ? 'var(--text-muted)' : 'var(--text-primary)' }}>{tObj.title}</h4>
+                          {relStudent && (
+                            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '6px' }}>
+                              👤 Talaba: {relStudent.nameEn} ({relStudent.id})
+                            </div>
+                          )}
+                          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>📅 Muddat: {tObj.dueDate}</div>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+                          <button className={`btn ${isCompleted ? 'btn-secondary' : 'btn-primary'}`} onClick={() => handleCompleteTask(tObj.id)} style={{ padding: '8px 16px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            {isCompleted ? (
+                              <>↩️ {lang === 'uz' ? 'Qaytarish' : 'やり直す'}</>
+                            ) : (
+                              <>✓ {lang === 'uz' ? 'Bajarildi' : '完了'}</>
+                            )}
+                          </button>
+                        </div>
                       </div>
-                      <button className="btn btn-primary" onClick={() => handleCompleteTask(tObj.id)} style={{ alignSelf: 'flex-end', padding: '6px 12px', fontSize: '11px' }}>
-                        ✓ {lang === 'uz' ? 'Bajarildi' : '完了'}
-                      </button>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                )}
               </div>
             </div>
 

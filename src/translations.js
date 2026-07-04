@@ -123,7 +123,7 @@ export const translations = {
     activeClasses: '稼働クラス数',
     averageAttendance: '平均出席率',
     todayLessons: '本日の授業',
-    upcomingHolidays: '直近 of 祝日・休日',
+    upcomingHolidays: '直近の祝日・休日',
     searchPlaceholder: '学生を検索 (氏名、国籍、ID)...',
     addStudent: '新規学生登録',
     studentId: '学籍番号',
