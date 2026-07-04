@@ -52,6 +52,13 @@ function App() {
   const [lang, setLang] = useState(() => localStorage.getItem('school_lang') || 'uz');
   const [ocrLoading, setOcrLoading] = useState(false);
   const [showStudentPortal, setShowStudentPortal] = useState(false);
+  const [showFinanceVerifyModal, setShowFinanceVerifyModal] = useState(false);
+  const [verifyInvoice, setVerifyInvoice] = useState(null);
+  const [verifyStudent, setVerifyStudent] = useState(null);
+  const [verifyForm, setVerifyForm] = useState({ bankName: 'Mizuho Bank', depositorName: '', depositDate: '2026-06-30', confirmed: false });
+
+  const [showExcuseModal, setShowExcuseModal] = useState(false);
+  const [excuseForm, setExcuseForm] = useState({ studentId: '', date: '2026-06-30', reason: 'Kasal / Sickness', doctorNoteRef: 'DIAGNOSTIC_SLIP_101' });
   
   // Persistent Core States
   const [students, setStudents] = useState(() => {
@@ -350,7 +357,9 @@ function App() {
 
   const handleCompleteTask = (taskId) => {
     const updated = tasks.map(tObj => {
-      if (tObj.id === taskId) return { ...tObj, status: 'Completed' };
+      if (tObj.id === taskId) {
+        return { ...tObj, status: tObj.status === 'Completed' ? 'Pending' : 'Completed' };
+      }
       return tObj;
     });
     setTasks(updated);
@@ -394,6 +403,81 @@ function App() {
     alert(lang === 'uz' ? "Barcha talabalar keldi deb belgilandi!" : "選択されたクラスの全学生を出席に設定しました。");
   };
 
+  const handleVerifyPaymentSubmit = (e) => {
+    e.preventDefault();
+    if (!verifyForm.confirmed) {
+      alert(lang === 'uz' ? "Bank ma'lumotlari mosligini tasdiqlash katakchasini belgilang!" : "銀行データの照合確認チェックボックスをオンにしてください！");
+      return;
+    }
+    const updatedStudents = students.map(s => {
+      if (s.id === verifyStudent.id) {
+        const updatedInvoices = s.invoices.map(inv => {
+          if (inv.id === verifyInvoice.id) {
+            return {
+              ...inv,
+              status: 'Paid',
+              paidDate: verifyForm.depositDate,
+              bankName: verifyForm.bankName,
+              depositorName: verifyForm.depositorName
+            };
+          }
+          return inv;
+        });
+        return { ...s, invoices: updatedInvoices };
+      }
+      return s;
+    });
+    setStudents(updatedStudents);
+    setShowFinanceVerifyModal(false);
+    setVerifyInvoice(null);
+    setVerifyStudent(null);
+    setVerifyForm({ bankName: 'Mizuho Bank', depositorName: '', depositDate: '2026-06-30', confirmed: false });
+    alert(lang === 'uz' ? "To'lov muvaffaqiyatli tasdiqlandi va saqlandi!" : "入金確認が正常に完了し、保存されました！");
+  };
+
+  const handleExcuseAbsenceSubmit = (e) => {
+    e.preventDefault();
+    const updatedStudents = students.map(s => {
+      if (s.id === excuseForm.studentId) {
+        const studentAttendance = { ...s.attendance };
+        studentAttendance[excuseForm.date] = ['excused', 'excused', 'excused', 'excused'];
+        
+        let totalPeriods = 0;
+        let presentPeriods = 0;
+        Object.values(studentAttendance).forEach(periods => {
+          periods.forEach(p => {
+            if (p !== 'excused') {
+              totalPeriods++;
+              if (p === 'present') presentPeriods++;
+              else if (p === 'late') presentPeriods += 0.75;
+            }
+          });
+        });
+        const newPercent = totalPeriods === 0 ? 100.0 : parseFloat(((presentPeriods / totalPeriods) * 100).toFixed(1));
+        
+        const newInterview = {
+          id: `excuse_${Date.now()}`,
+          date: excuseForm.date,
+          interviewer: 'Admin System',
+          category: 'Kasal / Sickness',
+          notes: `Tibbiy ma'lumotnoma tasdiqlandi. Sabab: ${excuseForm.reason}. Slip ID: ${excuseForm.doctorNoteRef}. Ushbu kun davomati hisobdan chiqarildi.`
+        };
+
+        return {
+          ...s,
+          attendance: studentAttendance,
+          attendancePercent: newPercent,
+          interviews: [newInterview, ...s.interviews]
+        };
+      }
+      return s;
+    });
+    setStudents(updatedStudents);
+    setShowExcuseModal(false);
+    setExcuseForm({ studentId: '', date: '2026-06-30', reason: 'Kasal / Sickness', doctorNoteRef: 'DIAGNOSTIC_SLIP_101' });
+    alert(lang === 'uz' ? "Tibbiy ma'lumotnoma asosida davomat qayta hisoblandi!" : "診断書に基づき出欠率が再計算されました！");
+  };
+
   const handlePeriodAttendanceChange = (studentId, date, periodIndex, status) => {
     const updated = students.map(s => {
       if (s.id === studentId) {
@@ -405,14 +489,15 @@ function App() {
         dayAttendance[periodIndex] = status;
         studentAttendance[date] = dayAttendance;
         
-        // Calculate new attendance percentage
         let totalPeriods = 0;
         let presentPeriods = 0;
         Object.values(studentAttendance).forEach(periods => {
           periods.forEach(p => {
-            totalPeriods++;
-            if (p === 'present') presentPeriods++;
-            else if (p === 'late') presentPeriods += 0.75;
+            if (p !== 'excused') {
+              totalPeriods++;
+              if (p === 'present') presentPeriods++;
+              else if (p === 'late') presentPeriods += 0.75;
+            }
           });
         });
         const newPercent = totalPeriods === 0 ? 100.0 : parseFloat(((presentPeriods / totalPeriods) * 100).toFixed(1));
@@ -1952,6 +2037,92 @@ function App() {
             
             {/* iPhone Home Indicator bar */}
             <div style={{ width: '130px', height: '5px', background: '#fff', borderRadius: '99px', position: 'absolute', bottom: '8px', left: '50%', transform: 'translateX(-50%)' }}></div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: MEDICAL EXCUSE VERIFICATION */}
+      {showExcuseModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(255, 255, 255, 0.3)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', display: 'block', overflowY: 'auto', zIndex: 3000 }}>
+          <div className="glass" style={{ width: '90%', maxWidth: '500px', padding: '32px', backgroundColor: 'rgba(255, 255, 255, 0.95)', margin: '100px auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
+              <h3 style={{ fontSize: '18px', margin: 0 }}>🏥 Tibbiy Ma'lumotnomani Tasdiqlash</h3>
+              <button type="button" onClick={() => setShowExcuseModal(false)} style={{ background: 'transparent', border: 'none', fontSize: '20px', cursor: 'pointer', color: 'var(--text-muted)' }}>✕</button>
+            </div>
+            <form onSubmit={handleExcuseAbsenceSubmit}>
+              <div className="form-group">
+                <label className="form-label">Talaba</label>
+                <select className="form-control" required value={excuseForm.studentId} onChange={(e) => setExcuseForm({ ...excuseForm, studentId: e.target.value })}>
+                  <option value="">-- Tanlang --</option>
+                  {students.map(s => <option key={s.id} value={s.id}>{s.nameEn} ({s.id})</option>)}
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Kasal bo'lgan sana</label>
+                <input type="date" className="form-control" required value={excuseForm.date} onChange={(e) => setExcuseForm({ ...excuseForm, date: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Tashxis / Sabab</label>
+                <input type="text" className="form-control" placeholder="Masalan: Gripp / Influenza" required value={excuseForm.reason} onChange={(e) => setExcuseForm({ ...excuseForm, reason: e.target.value })} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Shifokor Ma'lumotnomasi ID / Rasm kodi</label>
+                <input type="text" className="form-control" placeholder="DIAGNOSTIC_SLIP_101" required value={excuseForm.doctorNoteRef} onChange={(e) => setExcuseForm({ ...excuseForm, doctorNoteRef: e.target.value })} />
+              </div>
+              <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                💡 Ushbu sana davomati hisobdan chiqariladi (denominator kamaytiriladi) va talabaning davomat foizi qayta hisoblanadi. Bu Nyukan tekshiruvida rasmiy ruxsat beradi.
+              </p>
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setShowExcuseModal(false)}>Bekor qilish</button>
+                <button type="submit" className="btn btn-primary">✓ Tasdiqlash</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: FINANCE PAYMENT VERIFICATION */}
+      {showFinanceVerifyModal && verifyInvoice && verifyStudent && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(255, 255, 255, 0.3)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', display: 'block', overflowY: 'auto', zIndex: 3000 }}>
+          <div className="glass" style={{ width: '90%', maxWidth: '500px', padding: '32px', backgroundColor: 'rgba(255, 255, 255, 0.95)', margin: '100px auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
+              <h3 style={{ fontSize: '18px', margin: 0 }}>💰 Bank Depozit To'lovini Solishtirish</h3>
+              <button type="button" onClick={() => { setShowFinanceVerifyModal(false); setVerifyInvoice(null); setVerifyStudent(null); }} style={{ background: 'transparent', border: 'none', fontSize: '20px', cursor: 'pointer', color: 'var(--text-muted)' }}>✕</button>
+            </div>
+            <form onSubmit={handleVerifyPaymentSubmit}>
+              <div style={{ background: 'rgba(0,0,0,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', marginBottom: '16px', fontSize: '13px' }}>
+                <b>Talaba:</b> {verifyStudent.nameEn} ({verifyStudent.id}) <br />
+                <b>Invoys ID:</b> {verifyInvoice.id} ({verifyInvoice.term}) <br />
+                <b>Kutilayotgan Summa:</b> {verifyInvoice.amount.toLocaleString()} JPY
+              </div>
+              <div className="form-group">
+                <label className="form-label">Bank nomi</label>
+                <select className="form-control" required value={verifyForm.bankName} onChange={(e) => setVerifyForm({ ...verifyForm, bankName: e.target.value })}>
+                  <option value="Mizuho Bank">Mizuho Bank</option>
+                  <option value="Sumitomo Mitsui Bank (SMBC)">Sumitomo Mitsui Bank (SMBC)</option>
+                  <option value="Japan Post Bank (Yucho)">Japan Post Bank (Yucho)</option>
+                  <option value="Mitsubishi UFJ Bank (MUFG)">Mitsubishi UFJ Bank (MUFG)</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Depozitor (Yuboruvchi Ismi - bank statements)</label>
+                <input type="text" className="form-control" placeholder="Masalan: FARRUX KANOATOV (yoki sponsor ismi)" required value={verifyForm.depositorName} onChange={(e) => setVerifyForm({ ...verifyForm, depositorName: e.target.value.toUpperCase() })} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Depozit qo'yilgan sana (Bank o'tkazmasi sanasi)</label>
+                <input type="date" className="form-control" required value={verifyForm.depositDate} onChange={(e) => setVerifyForm({ ...verifyForm, depositDate: e.target.value })} />
+              </div>
+              <div className="form-group" style={{ display: 'flex', gap: '8px', alignItems: 'center', marginTop: '16px' }}>
+                <input type="checkbox" id="confirmCheck" required checked={verifyForm.confirmed} onChange={(e) => setVerifyForm({ ...verifyForm, confirmed: e.target.checked })} style={{ cursor: 'pointer' }} />
+                <label htmlFor="confirmCheck" style={{ fontSize: '12px', fontWeight: '600', cursor: 'pointer', margin: 0 }}>
+                  Bank ko'chirmasidagi tafsilotlarni solishtirib tekshirdim.
+                </label>
+              </div>
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '20px' }}>
+                <button type="button" className="btn btn-secondary" onClick={() => { setShowFinanceVerifyModal(false); setVerifyInvoice(null); setVerifyStudent(null); }}>Bekor qilish</button>
+                <button type="submit" className="btn btn-primary">✓ To'lovni Tasdiqlash</button>
+              </div>
+            </form>
           </div>
         </div>
       )}
