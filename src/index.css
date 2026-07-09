@@ -98,11 +98,11 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Frosted Glass Bento Containers with iOS Smooth Corners */
 .glass {
-  background: var(--bg-card);
-  backdrop-filter: blur(40px) saturate(210%);
-  -webkit-backdrop-filter: blur(40px) saturate(210%);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.03), inset 0 1.5px 0.5px rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(50px) saturate(220%);
+  -webkit-backdrop-filter: blur(50px) saturate(220%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 8px 32px 0 rgba(0, 122, 255, 0.02), inset 0 1.5px 0.5px rgba(255, 255, 255, 0.7);
   border-radius: 24px; /* Squircle appearance */
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, box-shadow;
@@ -110,9 +110,9 @@ h1, h2, h3, h4, h5, h6 {
 
 .glass:hover {
   transform: translateY(-4px);
-  background: rgba(255, 255, 255, 0.55);
-  box-shadow: 0 30px 60px -15px rgba(0, 122, 255, 0.1), inset 0 1.5px 0.5px rgba(255, 255, 255, 0.8);
-  border-color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.52);
+  box-shadow: 0 30px 60px -15px rgba(0, 122, 255, 0.08), inset 0 1.5px 0.5px rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.85);
 }
 
 /* Layout - iOS Floating Sidebar concept */

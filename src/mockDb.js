@@ -188,3 +188,27 @@ export const INITIAL_DOCUMENT_REQUESTS = [
   { id: 'req1', studentId: '20260001', docType: 'enrollment', requestDate: '2026-06-29', status: 'Pending' },
   { id: 'req2', studentId: '20260002', docType: 'grades', requestDate: '2026-06-29', status: 'Pending' }
 ];
+
+// O'quvchilar uyga vazifalari (Homework submissions for AI grading)
+export const INITIAL_HOMEWORK_SUBMISSIONS = [
+  {
+    id: 'sub1',
+    studentId: '20260001',
+    title: 'Kanji L15 Homework (食べる, 見る, 書く)',
+    imageType: 'kanji1',
+    status: 'Pending',
+    score: null,
+    feedback: '',
+    corrections: []
+  },
+  {
+    id: 'sub2',
+    studentId: '20260002',
+    title: 'JLPT N3 Essay: My Goals in Japan',
+    imageType: 'essay1',
+    status: 'Pending',
+    score: null,
+    feedback: '',
+    corrections: []
+  }
+];

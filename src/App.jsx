@@ -7,7 +7,8 @@ import {
   INITIAL_CALENDAR,
   INITIAL_TASKS,
   INITIAL_LESSON_LOGS,
-  INITIAL_DOCUMENT_REQUESTS
+  INITIAL_DOCUMENT_REQUESTS,
+  INITIAL_HOMEWORK_SUBMISSIONS
 } from './mockDb';
 import { translations } from './translations';
 import Tesseract from 'tesseract.js';
@@ -79,6 +80,10 @@ function App() {
   });
 
   const [classes, setClasses] = useState(INITIAL_CLASSES);
+  const [homeworkSubmissions, setHomeworkSubmissions] = useState(() => {
+    const saved = localStorage.getItem('school_homework_submissions');
+    return saved ? JSON.parse(saved) : INITIAL_HOMEWORK_SUBMISSIONS;
+  });
   const [courses, setCourses] = useState(INITIAL_COURSES);
   const [teachers, setTeachers] = useState(INITIAL_TEACHERS);
   const [calendar, setCalendar] = useState(INITIAL_CALENDAR);
@@ -115,6 +120,12 @@ function App() {
   const [seatingChart, setSeatingChart] = useState([]);
   const [bulkGradingMode, setBulkGradingMode] = useState(false);
   const [bulkGrades, setBulkGrades] = useState({}); // { studentId: score }
+  const [activeTeacherSubTab, setActiveTeacherSubTab] = useState('journal'); // journal, bulk, seating, aiGrading
+  const [selectedSubmissionId, setSelectedSubmissionId] = useState('');
+  const [aiGradingLoading, setAiGradingLoading] = useState(false);
+  const [aiGrade, setAiGrade] = useState(85);
+  const [aiFeedback, setAiFeedback] = useState('');
+  const [aiCorrections, setAiCorrections] = useState([]);
 
   // Admin Tools States
   const [activeAdminSubTab, setActiveAdminSubTab] = useState('coe'); // coe, requests, finance
@@ -138,6 +149,9 @@ function App() {
   useEffect(() => {
     localStorage.setItem('school_doc_requests', JSON.stringify(docRequests));
   }, [docRequests]);
+  useEffect(() => {
+    localStorage.setItem('school_homework_submissions', JSON.stringify(homeworkSubmissions));
+  }, [homeworkSubmissions]);
   useEffect(() => {
     localStorage.setItem('school_lang', lang);
   }, [lang]);
@@ -373,6 +387,95 @@ function App() {
     });
     setDocRequests(updated);
     alert(lang === 'uz' ? "Hujjat so'rovi tasdiqlandi. Chop etishga ruxsat berildi." : "証明書発行申請が承認されました。印刷プレビューが可能です。");
+  };
+
+  const handleStartAiGrading = (subId) => {
+    setAiGradingLoading(true);
+    setTimeout(() => {
+      setAiGradingLoading(false);
+      if (subId === 'sub1') {
+        setAiGrade(88);
+        setAiFeedback(lang === 'uz' ? 
+          "Talaba Farrux: Kanji yozilishi yaxshi. Biroq, 'Taberu' (食べる) kanzisini yozishda chiziqlar ketma-ketligi (stroke order) buzilgan. 'Miru' (見る) va 'Kaku' (書く) kanzilari to'g'ri." : 
+          "ファルホ学生：漢字の書き方は良好ですが、「食べる」の書き順（ストローク順）に誤りがあります。「見る」と「書く」は正確です。");
+        setAiCorrections([
+          { x: 135, y: 130, r: 25, note: lang === 'uz' ? "Chiziqlar tartibi noto'g'ri (書き順)" : "書き順ミス" },
+          { x: 380, y: 140, r: 20, note: lang === 'uz' ? "Oxirgi chiziq cho'zilishi shart" : "最後は伸ばす" }
+        ]);
+      } else {
+        setAiGrade(82);
+        setAiFeedback(lang === 'uz' ? 
+          "Talaba Anna: JLPT N3 insho mazmuni a'lo. Biroq, 3-qatordagi 'Nishon' (ni) kelishigi tushib qolgan. Grammatikada xato bor." : 
+          "アンナ学生：作文の構成は素晴らしいですが、3行目で助詞の「に」が抜けています。文法的な修正が必要です。");
+        setAiCorrections([
+          { x: 180, y: 210, r: 20, note: lang === 'uz' ? "'ni' kelishigi qo'shilsin" : "「に」を補う" },
+          { x: 410, y: 220, r: 22, note: lang === 'uz' ? "Grammatik xato" : "文法ミス" }
+        ]);
+      }
+    }, 1200);
+  };
+
+  const handleSaveAiGrade = (subId) => {
+    const targetSub = homeworkSubmissions.find(sub => sub.id === subId);
+    if (!targetSub) return;
+
+    const updatedSubmissions = homeworkSubmissions.map(sub => {
+      if (sub.id === subId) {
+        return {
+          ...sub,
+          status: 'Graded',
+          score: aiGrade,
+          feedback: aiFeedback,
+          corrections: aiCorrections
+        };
+      }
+      return sub;
+    });
+    setHomeworkSubmissions(updatedSubmissions);
+
+    const updatedStudents = students.map(s => {
+      if (s.id === targetSub.studentId) {
+        const letterGrade = aiGrade >= 90 ? 'A' : (aiGrade >= 80 ? 'B' : 'C');
+        const updatedGrades = {
+          ...s.grades,
+          internal: {
+            ...s.grades.internal,
+            kanji: targetSub.id === 'sub1' ? letterGrade : s.grades.internal.kanji,
+            writing: targetSub.id === 'sub2' ? letterGrade : s.grades.internal.writing,
+            total: letterGrade
+          }
+        };
+        const newInterview = {
+          id: `grade_log_${Date.now()}`,
+          date: new Date().toISOString().split('T')[0],
+          interviewer: 'Tanaka Sato (AI Asistent)',
+          category: 'Baholash',
+          notes: `${targetSub.title} tekshirildi. Ball: ${aiGrade}. AI sharhi: ${aiFeedback}`
+        };
+        return {
+          ...s,
+          grades: updatedGrades,
+          interviews: [newInterview, ...s.interviews]
+        };
+      }
+      return s;
+    });
+    setStudents(updatedStudents);
+
+    const newTaskObj = {
+      id: `task_grade_${Date.now()}`,
+      title: lang === 'uz' ? `${targetSub.title} bahosi tasdiqlandi: ${aiGrade} ball` : `${targetSub.title} の採点が確定: ${aiGrade}点`,
+      studentId: targetSub.studentId,
+      dueDate: new Date().toISOString().split('T')[0],
+      category: 'Suhbat',
+      status: 'Pending'
+    };
+    setTasks([newTaskObj, ...tasks]);
+
+    alert(lang === 'uz' ? "Baho muvaffaqiyatli saqlandi, o'quvchi profiliga yuborildi!" : "採点結果が保存され、学生マイページに送信されました！");
+    setSelectedSubmissionId('');
+    setAiFeedback('');
+    setAiCorrections([]);
   };
 
   // Excel Context Menu trigger
@@ -1389,52 +1492,109 @@ function App() {
         {/* 10. Teacher Workspace Tab */}
         {activeTab === 'teacherWorkspace' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div className="form-group" style={{ marginBottom: 0, minWidth: '240px' }}>
+            {/* iOS-Style Segmented Control for Sub Tabs */}
+            <div style={{ display: 'flex', background: 'rgba(0,0,0,0.03)', padding: '4px', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.06)', maxWidth: '640px' }}>
+              <button 
+                onClick={() => { setActiveTeacherSubTab('journal'); setSeatingChart([]); setBulkGradingMode(false); }} 
+                style={{ flex: 1, padding: '8px 16px', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', transition: 'all 0.2s', background: activeTeacherSubTab === 'journal' ? '#fff' : 'transparent', color: activeTeacherSubTab === 'journal' ? 'var(--ios-blue)' : 'var(--text-secondary)', boxShadow: activeTeacherSubTab === 'journal' ? '0 2px 8px rgba(0,0,0,0.08)' : 'none' }}
+              >
+                📖 {lang === 'uz' ? 'Dars Kundaligi' : '授業日誌'}
+              </button>
+              <button 
+                onClick={() => { setActiveTeacherSubTab('bulk'); setBulkGradingMode(true); setSeatingChart([]); }} 
+                style={{ flex: 1, padding: '8px 16px', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', transition: 'all 0.2s', background: activeTeacherSubTab === 'bulk' ? '#fff' : 'transparent', color: activeTeacherSubTab === 'bulk' ? 'var(--ios-blue)' : 'var(--text-secondary)', boxShadow: activeTeacherSubTab === 'bulk' ? '0 2px 8px rgba(0,0,0,0.08)' : 'none' }}
+              >
+                📝 {lang === 'uz' ? 'Ommaviy Baholar' : '成績一括入力'}
+              </button>
+              <button 
+                onClick={() => { setActiveTeacherSubTab('seating'); setSeatingChart([]); setBulkGradingMode(false); generateSeatingChartLogic(selectedTeacherClass); }} 
+                style={{ flex: 1, padding: '8px 16px', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', transition: 'all 0.2s', background: activeTeacherSubTab === 'seating' ? '#fff' : 'transparent', color: activeTeacherSubTab === 'seating' ? 'var(--ios-blue)' : 'var(--text-secondary)', boxShadow: activeTeacherSubTab === 'seating' ? '0 2px 8px rgba(0,0,0,0.08)' : 'none' }}
+              >
+                🪑 {lang === 'uz' ? 'Sekigae Joylashuv' : '席替え配置'}
+              </button>
+              <button 
+                onClick={() => { setActiveTeacherSubTab('aiGrading'); setSeatingChart([]); setBulkGradingMode(false); }} 
+                style={{ flex: 1, padding: '8px 16px', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', transition: 'all 0.2s', background: activeTeacherSubTab === 'aiGrading' ? '#fff' : 'transparent', color: activeTeacherSubTab === 'aiGrading' ? 'var(--ios-blue)' : 'var(--text-secondary)', boxShadow: activeTeacherSubTab === 'aiGrading' ? '0 2px 8px rgba(0,0,0,0.08)' : 'none' }}
+              >
+                🤖 {lang === 'uz' ? 'AI Tekshiruvchi' : 'AI採点アシスト'}
+              </button>
+            </div>
+
+            {/* Selected Class Filter (Only visible for Journal / Seating / Bulk) */}
+            {activeTeacherSubTab !== 'aiGrading' && (
+              <div className="form-group" style={{ marginBottom: 0, minWidth: '240px', maxWidth: '300px' }}>
                 <label className="form-label">{t('selectClass')}</label>
-                <select className="form-control" value={selectedTeacherClass} onChange={(e) => { setSelectedTeacherClass(e.target.value); setSeatingChart([]); }}>
+                <select className="form-control" value={selectedTeacherClass} onChange={(e) => { setSelectedTeacherClass(e.target.value); setSeatingChart([]); if (activeTeacherSubTab === 'seating') generateSeatingChartLogic(e.target.value); }}>
                   {classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
               </div>
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <button className="btn btn-primary" onClick={() => generateSeatingChartLogic(selectedTeacherClass)}>
-                  🪑 {t('seatingChart')} (Sekigae)
-                </button>
-                <button className="btn btn-secondary" onClick={handleStartBulkGrading}>
-                  📝 {lang === 'uz' ? 'Ommaviy Baholash' : '成績一括入力'}
-                </button>
-              </div>
-            </div>
+            )}
 
-            {/* Smart Seating Chart (Sekigae Map) */}
-            {seatingChart.length > 0 && (
-              <div className="glass" style={{ padding: '24px' }}>
-                <h3 style={{ fontSize: '18px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span>🪑</span> {t('seatingChart')} - Guruh Millat Balansi (Sekigae Map)
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', background: 'rgba(0,0,0,0.01)', padding: '24px', borderRadius: '16px' }}>
-                  <div style={{ width: '100%', maxWidth: '300px', height: '30px', background: '#333', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', fontWeight: 'bold', fontSize: '13px', marginBottom: '20px' }}>
-                    O'QITUVCHI STOLI (黒板・教卓)
-                  </div>
-                  {seatingChart.map((row, rIdx) => (
-                    <div key={rIdx} style={{ display: 'flex', gap: '30px', justifyContent: 'center', width: '100%' }}>
-                      {row.map(student => (
-                        <div key={student.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '12px', background: 'rgba(255,255,255,0.95)', border: '1px solid var(--border-color)', borderRadius: '14px', width: '130px', boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
-                          <img src={student.photo} alt={student.nameEn} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', marginBottom: '8px' }} />
-                          <div style={{ fontSize: '11px', fontWeight: 'bold', textAlign: 'center', width: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{student.nameEn.split(' ')[0]}</div>
-                          <span className="badge badge-success" style={{ fontSize: '9px', padding: '2px 6px', marginTop: '4px' }}>{student.nationality}</span>
-                        </div>
-                      ))}
+            {/* SUB-TAB 1: Class Lesson Journal */}
+            {activeTeacherSubTab === 'journal' && (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '24px' }}>
+                <div className="glass" style={{ padding: '24px' }}>
+                  <h3 style={{ fontSize: '18px', marginBottom: '16px' }}>📖 {lang === 'uz' ? 'Yangi Dars Kundaligi' : '授業日誌を登録'}</h3>
+                  {lessonLogs.filter(log => log.classId === selectedTeacherClass).length > 0 && (
+                    <div style={{ background: 'var(--accent-teal-glow)', padding: '12px', borderRadius: '12px', marginBottom: '20px', fontSize: '12px', border: '1px solid var(--border-color)', color: 'var(--accent-teal)' }}>
+                      <b>Oxirgi darsda:</b> {lessonLogs.filter(log => log.classId === selectedTeacherClass)[0].textbook} - {lessonLogs.filter(log => log.classId === selectedTeacherClass)[0].lesson} o'tildi.
                     </div>
-                  ))}
+                  )}
+                  <form onSubmit={handleAddLogSubmit}>
+                    <div className="form-group">
+                      <label className="form-label">Darslik / 教科書</label>
+                      <input type="text" className="form-control" placeholder="Minna no Nihongo" required value={newLog.textbook} onChange={(e) => setNewLog({ ...newLog, textbook: e.target.value })} />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Mavzu / 単元・トピック</label>
+                      <input type="text" className="form-control" placeholder="35-Dars Shart mayli" required value={newLog.lesson} onChange={(e) => setNewLog({ ...newLog, lesson: e.target.value })} />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Uyga Vazifa / 宿題</label>
+                      <input type="text" className="form-control" placeholder="Mondai 4, 5" required value={newLog.homework} onChange={(e) => setNewLog({ ...newLog, homework: e.target.value })} />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Izoh / 授業備考</label>
+                      <textarea className="form-control" placeholder="Darsda talabalar faolligi va boshqalar..." style={{ minHeight: '80px' }} value={newLog.notes} onChange={(e) => setNewLog({ ...newLog, notes: e.target.value })} />
+                    </div>
+                    <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '12px' }}>Darsni Qayd Etish</button>
+                  </form>
+                </div>
+
+                <div className="glass" style={{ padding: '24px' }}>
+                  <h3 style={{ fontSize: '18px', marginBottom: '16px' }}>📖 {lang === 'uz' ? 'Dars Qaydlari Arxivi' : '過去の授業日誌'}</h3>
+                  <div className="table-container">
+                    <table className="modern-table">
+                      <thead>
+                        <tr>
+                          <th>Sana</th>
+                          <th>Darslik</th>
+                          <th>Mavzu</th>
+                          <th>Uyga vazifa</th>
+                          <th>Qaydlar</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {lessonLogs.filter(log => log.classId === selectedTeacherClass).map(log => (
+                          <tr key={log.id}>
+                            <td>{log.date}</td>
+                            <td style={{ fontWeight: '600' }}>{log.textbook}</td>
+                            <td>{log.lesson}</td>
+                            <td>{log.homework}</td>
+                            <td style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{log.notes}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* Bulk Grading sheet */}
-            {bulkGradingMode && (
+            {/* SUB-TAB 2: Bulk Grading */}
+            {activeTeacherSubTab === 'bulk' && bulkGradingMode && (
               <div className="glass" style={{ padding: '24px' }}>
-                <h3 style={{ fontSize: '18px', marginBottom: '16px' }}>📝 Ommaviy Baholar Kiritish Varaqi</h3>
+                <h3 style={{ fontSize: '18px', marginBottom: '16px' }}>📝 {lang === 'uz' ? 'Ommaviy Baholar Kiritish Varaqi' : '成績一括入力用紙'}</h3>
                 <div className="table-container" style={{ marginBottom: '16px' }}>
                   <table className="modern-table">
                     <thead>
@@ -1464,71 +1624,198 @@ function App() {
                   </table>
                 </div>
                 <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-                  <button className="btn btn-secondary" onClick={() => setBulkGradingMode(false)}>{t('cancel')}</button>
+                  <button className="btn btn-secondary" onClick={() => { setActiveTeacherSubTab('journal'); setBulkGradingMode(false); }}>{t('cancel')}</button>
                   <button className="btn btn-primary" onClick={saveBulkGradesLogic}>{t('save')}</button>
                 </div>
               </div>
             )}
 
-            {/* Lesson Logs System (Substitute Handoff Log) */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '24px' }}>
+            {/* SUB-TAB 3: Seating Chart */}
+            {activeTeacherSubTab === 'seating' && seatingChart.length > 0 && (
               <div className="glass" style={{ padding: '24px' }}>
-                <h3 style={{ fontSize: '18px', marginBottom: '16px' }}>📖 Yangi Dars Kundaligi</h3>
-                {/* Last log handoff display */}
-                {lessonLogs.filter(log => log.classId === selectedTeacherClass).length > 0 && (
-                  <div style={{ background: 'var(--accent-teal-glow)', padding: '12px', borderRadius: '12px', marginBottom: '20px', fontSize: '12px', border: '1px solid var(--border-color)' }}>
-                    <b>Oxirgi darsda:</b> {lessonLogs.filter(log => log.classId === selectedTeacherClass)[0].textbook} - {lessonLogs.filter(log => log.classId === selectedTeacherClass)[0].lesson} o'tildi.
+                <h3 style={{ fontSize: '18px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span>🪑</span> {t('seatingChart')} - Guruh Millat Balansi (Sekigae Map)
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', background: 'rgba(0,0,0,0.01)', padding: '24px', borderRadius: '16px' }}>
+                  <div style={{ width: '100%', maxWidth: '300px', height: '30px', background: '#333', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', fontWeight: 'bold', fontSize: '13px', marginBottom: '20px' }}>
+                    O'QITUVCHI STOLI (黒板・教卓)
                   </div>
-                )}
-                <form onSubmit={handleAddLogSubmit}>
-                  <div className="form-group">
-                    <label className="form-label">Darslik / 教科書</label>
-                    <input type="text" className="form-control" placeholder="Minna no Nihongo" required value={newLog.textbook} onChange={(e) => setNewLog({ ...newLog, textbook: e.target.value })} />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Mavzu / 単元・トピック</label>
-                    <input type="text" className="form-control" placeholder="35-Dars Shart mayli" required value={newLog.lesson} onChange={(e) => setNewLog({ ...newLog, lesson: e.target.value })} />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Uyga Vazifa / 宿題</label>
-                    <input type="text" className="form-control" placeholder="Mondai 4, 5" required value={newLog.homework} onChange={(e) => setNewLog({ ...newLog, homework: e.target.value })} />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Izoh / 授業備考</label>
-                    <textarea className="form-control" placeholder="Darsda talabalar faolligi va boshqalar..." style={{ minHeight: '80px' }} value={newLog.notes} onChange={(e) => setNewLog({ ...newLog, notes: e.target.value })} />
-                  </div>
-                  <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '12px' }}>Darsni Qayd Etish</button>
-                </form>
-              </div>
-
-              <div className="glass" style={{ padding: '24px' }}>
-                <h3 style={{ fontSize: '18px', marginBottom: '16px' }}>📖 Dars Qaydlari Arxivi</h3>
-                <div className="table-container">
-                  <table className="modern-table">
-                    <thead>
-                      <tr>
-                        <th>Sana</th>
-                        <th>Darslik</th>
-                        <th>Mavzu</th>
-                        <th>Uyga vazifa</th>
-                        <th>Qaydlar</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {lessonLogs.filter(log => log.classId === selectedTeacherClass).map(log => (
-                        <tr key={log.id}>
-                          <td>{log.date}</td>
-                          <td style={{ fontWeight: '600' }}>{log.textbook}</td>
-                          <td>{log.lesson}</td>
-                          <td>{log.homework}</td>
-                          <td style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{log.notes}</td>
-                        </tr>
+                  {seatingChart.map((row, rIdx) => (
+                    <div key={rIdx} style={{ display: 'flex', gap: '30px', justifyContent: 'center', width: '100%' }}>
+                      {row.map(student => (
+                        <div key={student.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '12px', background: 'rgba(255,255,255,0.95)', border: '1px solid var(--border-color)', borderRadius: '14px', width: '130px', boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
+                          <img src={student.photo} alt={student.nameEn} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', marginBottom: '8px' }} />
+                          <div style={{ fontSize: '11px', fontWeight: 'bold', textAlign: 'center', width: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{student.nameEn.split(' ')[0]}</div>
+                          <span className="badge badge-success" style={{ fontSize: '9px', padding: '2px 6px', marginTop: '4px' }}>{student.nationality}</span>
+                        </div>
                       ))}
-                    </tbody>
-                  </table>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* SUB-TAB 4: AI Grading Assistant */}
+            {activeTeacherSubTab === 'aiGrading' && (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '24px' }}>
+                {/* Left Side: Homework Submissions List */}
+                <div className="glass" style={{ padding: '24px' }}>
+                  <h3 style={{ fontSize: '16px', marginBottom: '16px' }}>🗳️ Topshirilgan Vazifalar</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {homeworkSubmissions.map(sub => {
+                      const studentObj = students.find(s => s.id === sub.studentId);
+                      return (
+                        <div 
+                          key={sub.id} 
+                          onClick={() => { setSelectedSubmissionId(sub.id); setAiFeedback(''); setAiCorrections([]); }}
+                          style={{ padding: '16px', borderRadius: '14px', border: selectedSubmissionId === sub.id ? '2px solid var(--ios-blue)' : '1px solid var(--border-color)', background: selectedSubmissionId === sub.id ? 'rgba(0,122,255,0.04)' : 'rgba(255,255,255,0.5)', cursor: 'pointer', transition: 'all 0.2s' }}
+                        >
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                            <span className={`badge ${sub.status === 'Graded' ? 'badge-success' : 'badge-warning'}`} style={{ fontSize: '10px' }}>
+                              {sub.status === 'Graded' ? (lang === 'uz' ? 'Tekshirilgan' : '採点済') : (lang === 'uz' ? 'Kutilmoqda' : '未採点')}
+                            </span>
+                            {sub.score && <span style={{ fontWeight: 'bold', color: 'var(--ios-blue)' }}>{sub.score} ball</span>}
+                          </div>
+                          <h4 style={{ fontSize: '14px', fontWeight: 'bold', margin: '4px 0' }}>{sub.title}</h4>
+                          <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                            Talaba: {studentObj?.nameEn} | Guruh: N2
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Right Side: Selected Homework Canvas & Controls */}
+                <div className="glass" style={{ padding: '24px' }}>
+                  {selectedSubmissionId ? (
+                    (() => {
+                      const sub = homeworkSubmissions.find(s => s.id === selectedSubmissionId);
+                      const studentObj = students.find(s => s.id === sub.studentId);
+                      
+                      // Run simulated Canvas draw inside useEffect
+                      setTimeout(() => {
+                        const canvas = document.getElementById('grading-canvas');
+                        if (canvas) {
+                          const ctx = canvas.getContext('2d');
+                          ctx.clearRect(0, 0, canvas.width, canvas.height);
+                          ctx.fillStyle = '#fff9f0'; // Japanese grid paper cream
+                          ctx.fillRect(0, 0, canvas.width, canvas.height);
+                          
+                          // Draw Japanese grid lines (Genko Yoshi style)
+                          ctx.strokeStyle = 'rgba(0, 150, 0, 0.15)';
+                          ctx.lineWidth = 1;
+                          for (let x = 0; x < canvas.width; x += 40) {
+                            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+                          }
+                          for (let y = 0; y < canvas.height; y += 40) {
+                            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+                          }
+
+                          // Draw simulated handwritten characters
+                          ctx.font = 'bold 20px serif';
+                          ctx.fillStyle = '#1e293b';
+                          if (sub.id === 'sub1') {
+                            ctx.fillText("漢字の練習 (食べる, 見る, 書く)", 40, 50);
+                            ctx.fillText("一、私は毎日ご飯を食べる。", 40, 130);
+                            ctx.fillText("二、テレビを見る。", 40, 210);
+                            ctx.fillText("三、日本語で手紙を書く。", 40, 295);
+                          } else {
+                            ctx.fillText("日本で勉強する私の目標 (JLPT N3 作文)", 40, 50);
+                            ctx.fillText("私は来年大学に進学したいです。", 40, 130);
+                            ctx.fillText("だから、毎日三時間日本語勉強しています。", 40, 210);
+                            ctx.fillText("将来、日本とウズベキスタンの懸け橋になりたい。", 40, 295);
+                          }
+
+                          // Draw annotations if graded or simulation completed
+                          const activeCorr = aiCorrections.length > 0 ? aiCorrections : sub.corrections;
+                          if (activeCorr && activeCorr.length > 0) {
+                            activeCorr.forEach(c => {
+                              // Red ink check circle
+                              ctx.strokeStyle = '#ff3b30';
+                              ctx.lineWidth = 3;
+                              ctx.beginPath();
+                              ctx.arc(c.x, c.y, c.r, 0, 2 * Math.PI);
+                              ctx.stroke();
+
+                              // Correction note label
+                              ctx.fillStyle = '#ff3b30';
+                              ctx.font = 'bold 12px sans-serif';
+                              ctx.fillText(c.note, c.x + c.r + 5, c.y + 5);
+                            });
+                          }
+                        }
+                      }, 50);
+
+                      return (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
+                            <div>
+                              <h3 style={{ fontSize: '18px', fontWeight: 'bold' }}>{sub.title}</h3>
+                              <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                                Talaba: {studentObj?.nameEn} | Baholash: {sub.status === 'Graded' ? 'Muvaffaqiyatli yakunlangan' : 'Kutilmoqda'}
+                              </p>
+                            </div>
+                            {sub.status === 'Pending' && !aiFeedback && (
+                              <button className="btn btn-primary" onClick={() => handleStartAiGrading(sub.id)} disabled={aiGradingLoading} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                {aiGradingLoading ? (
+                                  <>Skanerlanmoqda...</>
+                                ) : (
+                                  <>🤖 AI Tekshiruvi</>
+                                )}
+                              </button>
+                            )}
+                          </div>
+
+                          {/* Canvas Image Container */}
+                          <div style={{ background: '#fff9f0', border: '1px solid var(--border-color)', borderRadius: '16px', overflow: 'hidden', display: 'flex', justifyContent: 'center', padding: '16px', boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.03)' }}>
+                            <canvas id="grading-canvas" width="600" height="380" style={{ maxWidth: '100%', height: 'auto', background: '#fff9f0' }}></canvas>
+                          </div>
+
+                          {/* AI feedback review and approvals controls */}
+                          {(aiFeedback || sub.status === 'Graded') && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px', background: 'rgba(0,0,0,0.01)', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+                              <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '16px', alignItems: 'center' }}>
+                                <label className="form-label" style={{ fontWeight: 'bold', marginBottom: 0 }}>AI Ball (Editiable):</label>
+                                <input 
+                                  type="number" 
+                                  className="form-control" 
+                                  style={{ maxWidth: '100px' }} 
+                                  value={aiGrade} 
+                                  onChange={(e) => setAiGrade(Number(e.target.value))} 
+                                  disabled={sub.status === 'Graded'}
+                                />
+                              </div>
+                              <div className="form-group" style={{ marginBottom: 0 }}>
+                                <label className="form-label" style={{ fontWeight: 'bold' }}>AI Fikr-mulohazasi & Izohlar:</label>
+                                <textarea 
+                                  className="form-control" 
+                                  style={{ minHeight: '80px' }} 
+                                  value={aiFeedback || sub.feedback} 
+                                  onChange={(e) => setAiFeedback(e.target.value)}
+                                  disabled={sub.status === 'Graded'}
+                                />
+                              </div>
+
+                              {sub.status === 'Pending' && (
+                                <button className="btn btn-primary" onClick={() => handleSaveAiGrade(sub.id)} style={{ width: '100%' }}>
+                                  ✓ Baholashni Tasdiqlash & Talabaga Yuborish
+                                </button>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()
+                  ) : (
+                    <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-secondary)' }}>
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '12px' }}><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="9"></line><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="13" y2="17"></line></svg>
+                      <p>{lang === 'uz' ? 'Chap tomondagi ro\'yxatdan tekshirilishi kerak bo\'lgan uyga vazifani tanlang.' : '左側のリストから採点する提出物を選んでください。'}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -2048,6 +2335,87 @@ function App() {
                 {getStudentTotalArubaitoHours(students[0]) > 28 && (
                   <div style={{ background: 'rgba(255,59,48,0.08)', color: 'var(--ios-red)', fontSize: '11px', padding: '8px 12px', borderRadius: '8px', marginTop: '10px', fontWeight: 'bold', border: '1px solid rgba(255,59,48,0.15)' }}>
                     ⚠️ {t('overlimit')}
+                  </div>
+                )}
+              </div>
+
+              {/* AI Homework Grading Results */}
+              <div style={{ background: '#fff', borderRadius: '18px', padding: '16px', marginBottom: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+                <h5 style={{ fontWeight: 'bold', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span>🤖</span> AI Baholash Natijalari
+                </h5>
+                {homeworkSubmissions.filter(sub => sub.studentId === students[0].id && sub.status === 'Graded').length === 0 ? (
+                  <div style={{ color: '#8e8e93', fontSize: '11px', textAlign: 'center', padding: '12px' }}>
+                    Tekshirilgan vazifalar yo'q.
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                    {homeworkSubmissions.filter(sub => sub.studentId === students[0].id && sub.status === 'Graded').map(sub => {
+                      // Schedule canvas render
+                      setTimeout(() => {
+                        const canvas = document.getElementById("student-grading-canvas-" + sub.id);
+                        if (canvas) {
+                          const ctx = canvas.getContext('2d');
+                          ctx.clearRect(0, 0, canvas.width, canvas.height);
+                          ctx.fillStyle = '#fff9f0';
+                          ctx.fillRect(0, 0, canvas.width, canvas.height);
+                          
+                          // Grid lines
+                          ctx.strokeStyle = 'rgba(0, 150, 0, 0.12)';
+                          ctx.lineWidth = 1;
+                          for (let x = 0; x < canvas.width; x += 20) {
+                            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+                          }
+                          for (let y = 0; y < canvas.height; y += 20) {
+                            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+                          }
+
+                          // Handwriting
+                          ctx.font = 'bold 11px serif';
+                          ctx.fillStyle = '#1e293b';
+                          if (sub.id === 'sub1') {
+                            ctx.fillText("漢字の練習 (食べる, 見る, 書く)", 15, 25);
+                            ctx.fillText("一、私は毎日ご飯を食べる。", 15, 65);
+                            ctx.fillText("二、テレビを見る。", 15, 105);
+                            ctx.fillText("三、日本語で手紙を書く。", 15, 145);
+                          } else {
+                            ctx.fillText("日本で勉強する私の目標", 15, 25);
+                            ctx.fillText("私は来年大学に進学したいです。", 15, 65);
+                            ctx.fillText("だから、毎日三時間日本語勉強しています。", 15, 105);
+                            ctx.fillText("将来、日本とウズベキスタンの懸け橋になりたい。", 15, 145);
+                          }
+
+                          // Annotations (scaled 0.5)
+                          if (sub.corrections && sub.corrections.length > 0) {
+                            sub.corrections.forEach(c => {
+                              ctx.strokeStyle = '#ff3b30';
+                              ctx.lineWidth = 1.5;
+                              ctx.beginPath();
+                              ctx.arc(c.x * 0.5, c.y * 0.5, c.r * 0.5, 0, 2 * Math.PI);
+                              ctx.stroke();
+                            });
+                          }
+                        }
+                      }, 100);
+
+                      return (
+                        <div key={sub.id} style={{ borderBottom: '1px solid #f2f2f7', paddingBottom: '12px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '12px', marginBottom: '6px' }}>
+                            <span>{sub.title}</span>
+                            <span style={{ color: 'var(--ios-blue)' }}>{sub.score} ball</span>
+                          </div>
+                          
+                          {/* Mini Canvas */}
+                          <div style={{ background: '#fff9f0', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '10px', overflow: 'hidden', padding: '8px', display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
+                            <canvas id={"student-grading-canvas-" + sub.id} width="300" height="180" style={{ width: '100%', height: 'auto' }}></canvas>
+                          </div>
+
+                          <div style={{ background: 'rgba(0,122,255,0.04)', padding: '8px 12px', borderRadius: '8px', fontSize: '11px', color: 'var(--ios-blue)' }}>
+                            <b>AI Fikr:</b> {sub.feedback}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
