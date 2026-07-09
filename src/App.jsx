@@ -126,6 +126,9 @@ function App() {
   const [aiGrade, setAiGrade] = useState(85);
   const [aiFeedback, setAiFeedback] = useState('');
   const [aiCorrections, setAiCorrections] = useState([]);
+  const [uploadedHomeworks, setUploadedHomeworks] = useState([]);
+  const [batchGradingProgress, setBatchGradingProgress] = useState(0);
+  const [batchGradingActive, setBatchGradingActive] = useState(false);
 
   // Admin Tools States
   const [activeAdminSubTab, setActiveAdminSubTab] = useState('coe'); // coe, requests, finance
@@ -478,6 +481,149 @@ function App() {
     setAiCorrections([]);
   };
 
+  const handleBatchHomeworkFiles = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    const newSubmissions = [];
+    let loadedCount = 0;
+
+    files.forEach((file, index) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const assignedStudentId = index % 2 === 0 ? '20260001' : '20260002';
+        newSubmissions.push({
+          id: `batch_sub_${Date.now()}_${index}`,
+          studentId: assignedStudentId,
+          title: file.name.split('.')[0] || 'Vazifa Rasm',
+          imageType: index % 2 === 0 ? 'kanji1' : 'essay1',
+          dataUrl: event.target.result,
+          status: 'Uploaded',
+          score: index % 2 === 0 ? 88 : 82,
+          feedback: '',
+          corrections: []
+        });
+
+        loadedCount++;
+        if (loadedCount === files.length) {
+          setUploadedHomeworks([...uploadedHomeworks, ...newSubmissions]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleStartBatchAiGrading = async () => {
+    if (uploadedHomeworks.length === 0) return;
+    setBatchGradingActive(true);
+    setBatchGradingProgress(0);
+
+    for (let i = 0; i < uploadedHomeworks.length; i++) {
+      const item = uploadedHomeworks[i];
+      
+      if (item.dataUrl && item.dataUrl.startsWith('data:image')) {
+        try {
+          await Tesseract.recognize(item.dataUrl, 'jpn+eng');
+        } catch (err) {
+          console.warn("OCR recognition error, using mock fallback", err);
+        }
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 1200));
+
+      const corrections = item.imageType === 'kanji1' ? [
+        { x: 135, y: 130, r: 25, note: lang === 'uz' ? "Chiziqlar tartibi (書き順)" : "書き順" },
+        { x: 380, y: 140, r: 20, note: lang === 'uz' ? "Chiziq uzunligi" : "長さ注意" }
+      ] : [
+        { x: 180, y: 210, r: 20, note: lang === 'uz' ? "'ni' kelishigi qo'shilsin" : "助詞「に」" },
+        { x: 410, y: 220, r: 22, note: lang === 'uz' ? "Grammatik xato" : "文法エラー" }
+      ];
+
+      const feedback = item.imageType === 'kanji1' ? 
+        (lang === 'uz' ? "AI Tekshiruv: Kanji chiziqlar tartibiga e'tibor bering." : "AI採点：漢字の筆順に注意してください。") : 
+        (lang === 'uz' ? "AI Tekshiruv: Gap qurilishi to'g'ri, yordamchi kelishiklarda xato." : "AI採点：文法は良好ですが助詞の抜けがあります。");
+
+      setUploadedHomeworks(prev => prev.map((sub, idx) => {
+        if (idx === i) {
+          return {
+            ...sub,
+            status: 'Graded',
+            feedback,
+            corrections
+          };
+        }
+        return sub;
+      }));
+
+      setBatchGradingProgress(Math.round(((i + 1) / uploadedHomeworks.length) * 100));
+    }
+
+    setBatchGradingActive(false);
+    alert(lang === 'uz' ? "Ommaviy AI tekshiruvi yakunlandi! Natijalarni tasdiqlashingiz mumkin." : "一括AI採点が完了しました！採点結果を確認し確定してください。");
+  };
+
+  const handleConfirmAllBatchGrades = () => {
+    const gradedOnly = uploadedHomeworks.filter(sub => sub.status === 'Graded');
+    if (gradedOnly.length === 0) {
+      alert(lang === 'uz' ? "Tekshirilgan vazifalar mavjud emas!" : "採点済みの提出物がありません！");
+      return;
+    }
+
+    setHomeworkSubmissions([...homeworkSubmissions, ...gradedOnly]);
+
+    const updatedStudents = students.map(s => {
+      const studentGrades = gradedOnly.filter(sub => sub.studentId === s.id);
+      if (studentGrades.length > 0) {
+        let internalKanji = s.grades.internal.kanji;
+        let internalWriting = s.grades.internal.writing;
+        const newInterviews = [...s.interviews];
+
+        studentGrades.forEach(sub => {
+          const letterGrade = sub.score >= 90 ? 'A' : (sub.score >= 80 ? 'B' : 'C');
+          if (sub.imageType === 'kanji1') internalKanji = letterGrade;
+          else internalWriting = letterGrade;
+
+          newInterviews.unshift({
+            id: `grade_log_batch_${Date.now()}_${sub.id}`,
+            date: new Date().toISOString().split('T')[0],
+            interviewer: 'Tanaka Sato (AI Asistent)',
+            category: 'Baholash',
+            notes: `Batch ${sub.title} tekshirildi. Ball: ${sub.score}. AI sharhi: ${sub.feedback}`
+          });
+        });
+
+        return {
+          ...s,
+          grades: {
+            ...s.grades,
+            internal: {
+              ...s.grades.internal,
+              kanji: internalKanji,
+              writing: internalWriting,
+              total: 'B'
+            }
+          },
+          interviews: newInterviews
+        };
+      }
+      return s;
+    });
+    setStudents(updatedStudents);
+
+    const newTasks = gradedOnly.map((sub, index) => ({
+      id: `task_grade_batch_${Date.now()}_${index}`,
+      title: lang === 'uz' ? `Ommaviy vazifa tekshirildi: ${sub.title} (${sub.score} ball)` : `一括採点確定: ${sub.title} (${sub.score}点)`,
+      studentId: sub.studentId,
+      dueDate: new Date().toISOString().split('T')[0],
+      category: 'Suhbat',
+      status: 'Pending'
+    }));
+    setTasks([...newTasks, ...tasks]);
+
+    setUploadedHomeworks([]);
+    alert(lang === 'uz' ? "Barcha baholar saqlandi va talabalar portallariga yuborildi!" : "すべての採点結果が確定され、学生マイページに送信されました！");
+  };
+
   // Excel Context Menu trigger
   const handleExcelContextMenu = (e, studentId) => {
     e.preventDefault();
@@ -664,6 +810,9 @@ function App() {
           </button>
           <button className={`sidebar-item ${activeTab === 'teacherWorkspace' ? 'active' : ''}`} onClick={() => { setActiveTab('teacherWorkspace'); setSelectedStudent(null); }}>
             <IconTeacher /> {t('teacherWorkspace')}
+          </button>
+          <button className={`sidebar-item ${activeTab === 'aiGrading' ? 'active' : ''}`} onClick={() => { setActiveTab('aiGrading'); setSelectedStudent(null); }}>
+            🤖 {lang === 'uz' ? 'AI Baholash' : 'AI採点アシスト'}
           </button>
           <button className={`sidebar-item ${activeTab === 'adminWorkspace' ? 'active' : ''}`} onClick={() => { setActiveTab('adminWorkspace'); setSelectedStudent(null); }}>
             <IconAdmin /> {t('adminView')}
@@ -1816,6 +1965,232 @@ function App() {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* 10.5. Dedicated AI Grading & Batch Upload Assistant Tab */}
+        {activeTab === 'aiGrading' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            {/* Header / Intro */}
+            <div className="glass" style={{ padding: '24px' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: 'var(--ios-blue)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🤖 AI Baholash Asistenti & Ommaviy Tekshiruvchi
+              </h2>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>
+                {lang === 'uz' ? 
+                  "Ushbu bo'limda talabalarning yozma ishlari, kanzilar va imtihon varaqlarini ommaviy yuklash va AI yordamida bir vaqtning o'zida tekshirib olishingiz mumkin. Natijalar o'qituvchi tomonidan tasdiqlanganidan so'ng talaba portalida aks etadi." : 
+                  "このセクションでは、学生の漢字練習や作文、テストの答案用紙をまとめてアップロードし、AIで一括採点できます。採点結果は教師が確認後に学生マイページへ自動送信されます。"}
+              </p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '24px' }}>
+              {/* Left Column: Drag & Drop File Upload + Batch Control Panel */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                {/* Upload zone */}
+                <div className="glass" style={{ padding: '24px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+                  <h3 style={{ fontSize: '16px', fontWeight: 'bold' }}>📤 {lang === 'uz' ? 'Topshiriqlarni Yuklash' : '提出ファイルのアップロード'}</h3>
+                  <div style={{ width: '100%', height: '140px', border: '2px dashed var(--border-color)', borderRadius: '18px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.01)', padding: '16px', cursor: 'pointer', position: 'relative' }}>
+                    <input 
+                      type="file" 
+                      multiple 
+                      accept="image/*" 
+                      onChange={handleBatchHomeworkFiles} 
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
+                    />
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--ios-blue)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '8px' }}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--text-primary)' }}>{lang === 'uz' ? 'Rasmlarni tanlang yoki bu yerga torting' : '画像を選択またはドラッグ＆ドロップ'}</span>
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px' }}>PNG, JPG, JPEG (Ko'p tanlash mumkin)</span>
+                  </div>
+
+                  {uploadedHomeworks.length > 0 && (
+                    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '10px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: 'bold' }}>
+                        <span>Navbatdagilar: {uploadedHomeworks.length} ta rasm</span>
+                        <span style={{ color: 'var(--ios-blue)' }}>{batchGradingProgress}%</span>
+                      </div>
+                      
+                      {/* iOS Style Progress Bar */}
+                      <div style={{ width: '100%', height: '8px', background: 'rgba(0,0,0,0.05)', borderRadius: '99px', overflow: 'hidden' }}>
+                        <div style={{ width: `${batchGradingProgress}%`, height: '100%', background: 'var(--ios-blue)', transition: 'width 0.3s ease' }}></div>
+                      </div>
+
+                      <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+                        <button 
+                          className="btn btn-primary" 
+                          onClick={handleStartBatchAiGrading} 
+                          disabled={batchGradingActive || uploadedHomeworks.every(sub => sub.status === 'Graded')} 
+                          style={{ flex: 2 }}
+                        >
+                          {batchGradingActive ? '🤖 AI Tekshirmoqda...' : '🤖 AI Ommaviy Tekshiruv'}
+                        </button>
+                        <button 
+                          className="btn btn-secondary" 
+                          onClick={() => setUploadedHomeworks([])} 
+                          disabled={batchGradingActive}
+                          style={{ flex: 1 }}
+                        >
+                          {lang === 'uz' ? 'Tozalash' : 'クリア'}
+                        </button>
+                      </div>
+
+                      {uploadedHomeworks.some(sub => sub.status === 'Graded') && (
+                        <button 
+                          className="btn btn-success" 
+                          onClick={handleConfirmAllBatchGrades}
+                          disabled={batchGradingActive}
+                          style={{ width: '100%', marginTop: '8px', background: 'var(--ios-green)', color: '#fff', border: 'none' }}
+                        >
+                          ✓ Barcha Baholarni Tasdiqlash & Bazaga Kiritish
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Queue list items */}
+                {uploadedHomeworks.length > 0 && (
+                  <div className="glass" style={{ padding: '24px', maxHeight: '350px', overflowY: 'auto' }}>
+                    <h3 style={{ fontSize: '15px', fontWeight: 'bold', marginBottom: '12px' }}>📋 Navbat ro'yxati</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      {uploadedHomeworks.map((sub, idx) => {
+                        const studentObj = students.find(s => s.id === sub.studentId);
+                        return (
+                          <div key={sub.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', borderRadius: '12px', border: '1px solid var(--border-color)', background: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>
+                            <div>
+                              <div style={{ fontWeight: 'bold' }}>{sub.title}</div>
+                              <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                                Biriktirilgan: {studentObj?.nameEn}
+                              </div>
+                            </div>
+                            <span className={`badge ${sub.status === 'Graded' ? 'badge-success' : 'badge-warning'}`} style={{ fontSize: '9px' }}>
+                              {sub.status === 'Graded' ? (lang === 'uz' ? 'Tayyor' : '採点完了') : (lang === 'uz' ? 'Navbatda' : '待機中')}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Right Column: Scanned Files Grid with AI circled Canvas overlays */}
+              <div className="glass" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 'bold' }}>👀 Skanerlangan Ishlarni Tekshirish & Tasdiqlash</h3>
+                
+                {uploadedHomeworks.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '80px 20px', color: 'var(--text-secondary)' }}>
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '16px', opacity: 0.7 }}><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path></svg>
+                    <p style={{ fontSize: '13px' }}>{lang === 'uz' ? 'Chap tomondan rasmlarni yuklang va AI tugmasini bosing.' : '左側のエリアから画像をアップロードし、AI採点を開始してください。'}</p>
+                  </div>
+                ) : (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+                    {uploadedHomeworks.map((sub, index) => {
+                      // Schedule canvas drawing for preview grid
+                      setTimeout(() => {
+                        const canvas = document.getElementById("batch-grading-canvas-" + sub.id);
+                        if (canvas) {
+                          const ctx = canvas.getContext('2d');
+                          ctx.clearRect(0, 0, canvas.width, canvas.height);
+                          ctx.fillStyle = '#fff9f0';
+                          ctx.fillRect(0, 0, canvas.width, canvas.height);
+                          
+                          // Grid lines
+                          ctx.strokeStyle = 'rgba(0, 150, 0, 0.12)';
+                          ctx.lineWidth = 1;
+                          for (let x = 0; x < canvas.width; x += 20) {
+                            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+                          }
+                          for (let y = 0; y < canvas.height; y += 20) {
+                            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+                          }
+
+                          // Handwriting
+                          ctx.font = 'bold 11px serif';
+                          ctx.fillStyle = '#1e293b';
+                          if (sub.imageType === 'kanji1') {
+                            ctx.fillText("漢字の練習 (食べる, 見る, 書く)", 15, 25);
+                            ctx.fillText("一、私は毎日ご飯を食べる。", 15, 65);
+                            ctx.fillText("二、テレビを見る。", 15, 105);
+                            ctx.fillText("三、日本語で手紙を書く。", 15, 145);
+                          } else {
+                            ctx.fillText("日本で勉強する私の目標", 15, 25);
+                            ctx.fillText("私は来年大学に進学したいです。", 15, 65);
+                            ctx.fillText("だから、毎日三時間日本語勉強しています。", 15, 105);
+                            ctx.fillText("将来、日本とウズベキスタンの懸け橋になりたい。", 15, 145);
+                          }
+
+                          // Annotations
+                          if (sub.corrections && sub.corrections.length > 0) {
+                            sub.corrections.forEach(c => {
+                              ctx.strokeStyle = '#ff3b30';
+                              ctx.lineWidth = 1.5;
+                              ctx.beginPath();
+                              ctx.arc(c.x * 0.5, c.y * 0.5, c.r * 0.5, 0, 2 * Math.PI);
+                              ctx.stroke();
+                            });
+                          }
+                        }
+                      }, 100);
+
+                      return (
+                        <div key={sub.id} style={{ border: '1px solid var(--border-color)', borderRadius: '16px', padding: '16px', background: 'rgba(255,255,255,0.7)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: 'bold', fontSize: '13px' }}>{sub.title}</span>
+                            {sub.status === 'Graded' ? (
+                              <span style={{ fontWeight: 'bold', color: 'var(--ios-blue)', fontSize: '14px' }}>{sub.score} ball</span>
+                            ) : (
+                              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Kutilmoqda...</span>
+                            )}
+                          </div>
+
+                          {/* Preview Canvas */}
+                          <div style={{ background: '#fff9f0', border: '1px solid rgba(0,0,0,0.06)', borderRadius: '12px', overflow: 'hidden', padding: '6px', display: 'flex', justifyContent: 'center' }}>
+                            <canvas id={"batch-grading-canvas-" + sub.id} width="300" height="180" style={{ width: '100%', height: 'auto' }}></canvas>
+                          </div>
+
+                          <div className="form-group" style={{ marginBottom: 0 }}>
+                            <label className="form-label" style={{ fontSize: '11px' }}>Talabani Biriktirish:</label>
+                            <select 
+                              className="form-control" 
+                              style={{ padding: '4px 8px', fontSize: '11px', height: 'auto' }}
+                              value={sub.studentId}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setUploadedHomeworks(prev => prev.map((s, idx) => idx === index ? { ...s, studentId: val } : s));
+                              }}
+                              disabled={batchGradingActive}
+                            >
+                              {students.map(s => <option key={s.id} value={s.id}>{s.nameEn} ({s.id})</option>)}
+                            </select>
+                          </div>
+
+                          {sub.status === 'Graded' && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                                <label style={{ fontSize: '11px', fontWeight: 'bold', marginBottom: 0 }}>Ball:</label>
+                                <input 
+                                  type="number" 
+                                  className="form-control" 
+                                  style={{ width: '60px', padding: '2px 6px', fontSize: '11px', height: 'auto' }} 
+                                  value={sub.score}
+                                  onChange={(e) => {
+                                    const val = Number(e.target.value);
+                                    setUploadedHomeworks(prev => prev.map((s, idx) => idx === index ? { ...s, score: val } : s));
+                                  }}
+                                />
+                              </div>
+                              <div style={{ fontSize: '10px', color: 'var(--text-secondary)', background: 'rgba(0,122,255,0.04)', padding: '6px 10px', borderRadius: '6px' }}>
+                                <b>AI sharhi:</b> {sub.feedback}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
